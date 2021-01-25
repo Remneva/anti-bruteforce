@@ -20,7 +20,7 @@ const text = "something strange"
 
 type grpcCommands struct {
 	commands map[string]cli.CommandFactory
-	cli      *servercli
+	cli      *Servercli
 }
 
 func (g *grpcCommands) Clean(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
@@ -162,7 +162,7 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	return ret, stdout, stderr, nil
 }
 
-func (s *servercli) RunCli() {
+func (s *Servercli) RunCli() {
 	c := cli.NewCLI("server", "1.0.0")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
@@ -210,19 +210,19 @@ func (s *servercli) RunCli() {
 	os.Exit(exitStatus)
 }
 
-type servercli struct {
+type Servercli struct {
 	grpc *grpc.Server
 	app  *app.App
 }
 
-func New(app *app.App) *servercli {
-	c := &servercli{
+func New(app *app.App) *Servercli {
+	c := &Servercli{
 		app: app,
 	}
 	return c
 }
 
-func (s *servercli) Stop() {
+func (s *Servercli) Stop() {
 	s.grpc.GracefulStop()
 }
 
