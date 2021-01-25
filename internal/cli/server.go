@@ -16,9 +16,11 @@ import (
 	"google.golang.org/grpc"
 )
 
+const text = "something strange"
+
 type grpcCommands struct {
 	commands map[string]cli.CommandFactory
-	cli      *clisrv
+	cli      *servercli
 }
 
 func (g *grpcCommands) Clean(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
@@ -68,7 +70,7 @@ func (g *grpcCommands) DeleteFromWhiteList(ctx context.Context, arg *pb.Arg) (*p
 	if err = g.cli.app.DeleteFromWhiteList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, err
+	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
 }
 
 func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
@@ -80,7 +82,7 @@ func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, arg *pb.Arg) (*p
 	if err = g.cli.app.DeleteFromBlackList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, fmt.Errorf(err.Error())
+	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
 }
 
 func (t *Clean) Run(args []string) int {
@@ -90,7 +92,7 @@ func (t *Clean) Run(args []string) int {
 }
 
 func (t *Clean) Synopsis() string {
-	return "A sample command that says hello on stdout"
+	return text
 }
 
 func (t *AddToWhiteList) Run(args []string) int {
@@ -99,7 +101,7 @@ func (t *AddToWhiteList) Run(args []string) int {
 }
 
 func (t *AddToWhiteList) Synopsis() string {
-	return "A sample command that says hello on stdout"
+	return text
 }
 
 func (t *AddToBlackList) Run(args []string) int {
@@ -108,7 +110,7 @@ func (t *AddToBlackList) Run(args []string) int {
 }
 
 func (t *AddToBlackList) Synopsis() string {
-	return "A sample command that says hello on stdout"
+	return text
 }
 
 func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error) {
@@ -139,13 +141,14 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	// copy the output in a separate goroutine so printing can't block indefinitely
 	go func() {
 		var buf bytes.Buffer
-		io.Copy(&buf, r)
+		_, err = io.Copy(&buf, r)
 		outC <- buf.Bytes()
 	}()
 	// copy the output in a separate goroutine so printing can't block indefinitely
 	go func() {
 		var buf bytes.Buffer
-		io.Copy(&buf, re)
+		_, err = io.Copy(&buf, re)
+
 		errC <- buf.Bytes()
 	}()
 
@@ -159,7 +162,7 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	return ret, stdout, stderr, nil
 }
 
-func (s *clisrv) RunCli() {
+func (s *servercli) RunCli() {
 	c := cli.NewCLI("server", "1.0.0")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
@@ -194,7 +197,10 @@ func (s *clisrv) RunCli() {
 
 		// determine whether to use TLS
 		fmt.Println("3")
-		grpcServer.Serve(listener)
+		err = grpcServer.Serve(listener)
+		if err != nil {
+			log.Fatalf("failed to start: %v", err)
+		}
 	}
 	exitStatus, err := c.Run()
 	if err != nil {
@@ -204,19 +210,19 @@ func (s *clisrv) RunCli() {
 	os.Exit(exitStatus)
 }
 
-type clisrv struct {
+type servercli struct {
 	grpc *grpc.Server
 	app  *app.App
 }
 
-func NewCli(app *app.App) *clisrv {
-	c := &clisrv{
+func New(app *app.App) *servercli {
+	c := &servercli{
 		app: app,
 	}
 	return c
 }
 
-func (s *clisrv) Stop() {
+func (s *servercli) Stop() {
 	s.grpc.GracefulStop()
 }
 
@@ -231,28 +237,28 @@ type Clean struct {
 }
 
 func (t *Clean) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	return text
 }
 
 type AddToWhiteList struct {
 }
 
 func (t *AddToWhiteList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	return text
 }
 
 type AddToBlackList struct {
 }
 
 func (t *AddToBlackList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	return text
 }
 
 type DeleteFromWhiteList struct {
 }
 
 func (d DeleteFromWhiteList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	return text
 }
 
 func (d DeleteFromWhiteList) Run(args []string) int {
@@ -261,14 +267,14 @@ func (d DeleteFromWhiteList) Run(args []string) int {
 }
 
 func (d DeleteFromWhiteList) Synopsis() string {
-	return "A sample command that says hello on stdout"
+	return text
 }
 
 type DeleteFromBlackList struct {
 }
 
 func (d DeleteFromBlackList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	return text
 }
 
 func (d DeleteFromBlackList) Run(args []string) int {
@@ -277,5 +283,5 @@ func (d DeleteFromBlackList) Run(args []string) int {
 }
 
 func (d DeleteFromBlackList) Synopsis() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	return text
 }

@@ -52,7 +52,7 @@ func main() {
 	application := app.NewApp(ctx, storage, config, redisClient, logg)
 
 	grpc, _ := grpc2.NewServer(application, logg, config.Port.Grpc)
-	client := cli.NewCli(application)
+	client := cli.New(application)
 	go signalChan(grpc, client)
 	go client.RunCli()
 	if err := grpc.Start(); err != nil {
