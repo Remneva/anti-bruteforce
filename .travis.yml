@@ -31,7 +31,7 @@ jobs:
     - stage: "Tests"
       name: "go get"
       install: echo "skip"
-      script: cd /tmp && go get "github.com/${TRAVIS_REPO_SLUG}/${BRANCH}@${BRANCH}"
+      script: cd /tmp && go get "github.com/${TRAVIS_REPO_SLUG}/@${BRANCH}"
 
     - stage: "Tests"
       name: "Linters"
@@ -41,7 +41,7 @@ jobs:
     - stage: "Tests"
       name: "Unit tests"
       install: go mod download
-      script: go test -race -count 100 -timeout=30s ./...
+      script: go test -race -count 10 -timeout=30s ./...
 
     - stage: "Tests"
       name: "Makefile"
