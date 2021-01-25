@@ -1,0 +1,52 @@
+version: "3"
+networks:
+  db:
+    driver: bridge
+
+services:
+  anti_bruteforce_service:
+    build: /
+    depends_on:
+      - postgres
+#      - redis
+    restart: on-failure
+    ports:
+      - "8088:8088"
+    expose:
+      - 8088
+    environment:
+      REG_SERVICE_DB_DSN: "postgres://test:test@postgres:5432/exampledb?sslmode=disable"
+      REG_SERVICE_SERVER_ADDR: ":8088"
+    networks:
+      - db
+#      - redis
+
+  postgres:
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: exampledb
+    volumes:
+      # https://github.com/docker-library/postgres/blob/master/docker-entrypoint.sh#L145
+      - ./scripts/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    networks:
+      - db
+
+#  redis:
+#    container_name: redis
+#    image: redis:4.0-alpine
+##    command:
+##        - 'redis-server'
+##        - '--loglevel ${REDIS_LOGLEVEL:-warning}'
+##        - '--databases 2'
+##        - '--maxmemory ${REDIS_MAXMEM:-50mb}'
+##        - '--maxmemory-policy ${REDIS_POLICY:-noeviction}'
+#    ports:
+#        - "6379:6379"
+#    networks:
+#      - redis

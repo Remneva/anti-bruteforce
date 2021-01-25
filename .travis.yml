@@ -1,0 +1,54 @@
+language: go
+
+go:
+  - "1.15"
+
+os:
+  - linux
+
+git:
+  depth: 1
+  quiet: true
+  submodules: false
+
+notifications:
+  email: false
+
+env:
+  global:
+    - GO111MODULE=on
+    - GOPROXY=https://proxy.golang.org
+    - BRANCH="${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+
+before_install:
+  - echo "current branch is ${BRANCH}"
+  - if [ "${BRANCH}" == "master" ]; then travis_terminate 0; fi
+  - ls ${BRANCH} && cd ${BRANCH}
+
+stages:
+  - name: Tests
+
+jobs:
+  include:
+    - stage: "Tests"
+      name: "go get"
+      install: echo "skip"
+      script: cd /tmp && go get "github.com/${TRAVIS_REPO_SLUG}/${BRANCH}@${BRANCH}"
+
+    - stage: "Tests"
+      name: "Linters"
+      install: go install github.com/golangci/golangci-lint/cmd/golangci-lint
+      script: golangci-lint run ./...
+
+    - stage: "Tests"
+      name: "Unit tests"
+      install: go mod download
+      script: go test -race -count 100 -timeout=30s ./...
+
+    - stage: "Tests"
+      name: "Makefile"
+      install: go mod download
+      script:
+        - make lint
+        - make test
+        - make build

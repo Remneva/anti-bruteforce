@@ -1,0 +1,12 @@
+[psql]
+dsn = "host=localhost port=5432 user=test password=test dbname=exampledb sslmode=disable"
+[logger]
+level = "INFO"
+path = "/tmp/tmpdir/log.log"
+[port]
+http = ":8082"
+grpc = "localhost:50051"
+[redis]
+address = "localhost:6379"
+password = "123456"
+expiryperiod = 60 # increment expiry period
