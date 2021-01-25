@@ -18,104 +18,69 @@ import (
 
 type grpcCommands struct {
 	commands map[string]cli.CommandFactory
-	cli      *CliC
-}
-
-type Clean struct {
-}
-
-type AddToWhiteList struct {
-}
-
-type AddToBlackList struct {
-}
-
-type DeleteFromWhiteList struct {
-}
-
-func (d DeleteFromWhiteList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
-}
-
-func (d DeleteFromWhiteList) Run(args []string) int {
-	panic("implement me")
-}
-
-func (d DeleteFromWhiteList) Synopsis() string {
-	panic("implement me")
-}
-
-type DeleteFromBlackList struct {
-}
-
-func (d DeleteFromBlackList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
-}
-
-func (d DeleteFromBlackList) Run(args []string) int {
-	fmt.Println("Delete ip from bucket command", args)
-	return 0
-}
-
-func (d DeleteFromBlackList) Synopsis() string {
-	panic("implement me")
+	cli      *clisrv
 }
 
 func (g *grpcCommands) Clean(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
 	ret, stdout, stderr, err := wrapper(g.commands["clean"], arg.Args)
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
 	var us storage.User
 	us.Login = arg.Args[0]
 	us.IP = arg.Args[1]
-	g.cli.app.CleanBucket(us)
-	fmt.Println(us.Login)
-	fmt.Println(us.IP)
-	fmt.Println("print CLEAN")
-
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, err
+	if err = g.cli.app.CleanBucket(us); err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
+	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
 }
 
 func (g *grpcCommands) AddToWhiteList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
 	ret, stdout, stderr, err := wrapper(g.commands["addToWhiteList"], arg.Args)
-	var ip storage.IP
-	ip.IP = arg.Args[0]
-	ip.Mask = arg.Args[1]
-	g.cli.app.AddToWhiteList(ctx, ip)
-	fmt.Println("print AddToWhiteList")
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, err
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
+	ip := parseToStorage(arg.Args[0], arg.Args[1])
+	if err = g.cli.app.AddToWhiteList(ctx, ip); err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
+	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
 }
 
 func (g *grpcCommands) AddToBlackList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
 	ret, stdout, stderr, err := wrapper(g.commands["addToBlackList"], arg.Args)
-	var ip storage.IP
-	ip.IP = arg.Args[0]
-	ip.Mask = arg.Args[1]
-	g.cli.app.AddToBlackList(ctx, ip)
-	fmt.Println("print AddToBlackList")
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, err
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
+	ip := parseToStorage(arg.Args[0], arg.Args[1])
+	if err = g.cli.app.AddToBlackList(ctx, ip); err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
+	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
 }
 
 func (g *grpcCommands) DeleteFromWhiteList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
 	ret, stdout, stderr, err := wrapper(g.commands["deleteFromBlackList"], arg.Args)
-	var ip storage.IP
-	ip.IP = arg.Args[0]
-	ip.Mask = arg.Args[1]
-	g.cli.app.DeleteFromWhiteList(ctx, ip)
-	fmt.Println("print DeleteFromWhiteList")
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
+	ip := parseToStorage(arg.Args[0], arg.Args[1])
+	if err = g.cli.app.DeleteFromWhiteList(ctx, ip); err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
 	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, err
 }
 
 func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
 	ret, stdout, stderr, err := wrapper(g.commands["deleteFromBlackList"], arg.Args)
-	var ip storage.IP
-	ip.IP = arg.Args[0]
-	ip.Mask = arg.Args[1]
-	g.cli.app.DeleteFromBlackList(ctx, ip)
-	fmt.Println("print DeleteFromBlackList")
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, err
-}
-
-func (t *Clean) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
+	ip := parseToStorage(arg.Args[0], arg.Args[1])
+	if err = g.cli.app.DeleteFromBlackList(ctx, ip); err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
+	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, fmt.Errorf(err.Error())
 }
 
 func (t *Clean) Run(args []string) int {
@@ -128,10 +93,6 @@ func (t *Clean) Synopsis() string {
 	return "A sample command that says hello on stdout"
 }
 
-func (t *AddToWhiteList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
-}
-
 func (t *AddToWhiteList) Run(args []string) int {
 	fmt.Println("AddToWhiteList command", args)
 	return 0
@@ -139,10 +100,6 @@ func (t *AddToWhiteList) Run(args []string) int {
 
 func (t *AddToWhiteList) Synopsis() string {
 	return "A sample command that says hello on stdout"
-}
-
-func (t *AddToBlackList) Help() string {
-	return "hello [arg0] [arg1] ... says hello to everyone"
 }
 
 func (t *AddToBlackList) Run(args []string) int {
@@ -162,18 +119,18 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	// Backup the stdout
 	r, w, err := os.Pipe()
 	if err != nil {
-		return ret, nil, nil, err
+		return ret, nil, nil, fmt.Errorf("error: %w", err)
 	}
 	re, we, err := os.Pipe()
 	if err != nil {
-		return ret, nil, nil, err
+		return ret, nil, nil, fmt.Errorf("error: %w", err)
 	}
 	os.Stdout = w
 	os.Stderr = we
 
 	runner, err := cf()
 	if err != nil {
-		return ret, nil, nil, err
+		return ret, nil, nil, fmt.Errorf("error: %w", err)
 	}
 	ret = int32(runner.Run(args))
 
@@ -202,48 +159,7 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	return ret, stdout, stderr, nil
 }
 
-func main() {
-	c := cli.NewCLI("server", "1.0.0")
-	c.Args = os.Args[1:]
-	c.Commands = map[string]cli.CommandFactory{
-		"clean": func() (cli.Command, error) {
-			return &Clean{}, nil
-		},
-		"addToWhiteList": func() (cli.Command, error) {
-			return &AddToWhiteList{}, nil
-		},
-		"addToBlackList": func() (cli.Command, error) {
-			return &AddToBlackList{}, nil
-		},
-		"deleteFromWhiteList": func() (cli.Command, error) {
-			return &DeleteFromWhiteList{}, nil
-		},
-		"deleteFromBlackList": func() (cli.Command, error) {
-			return &DeleteFromBlackList{}, nil
-		},
-	}
-	if len(c.Args) == 0 {
-		listener, err := net.Listen("tcp", "127.0.0.1:1234")
-		if err != nil {
-			log.Fatalf("failed to listen: %v", err)
-		}
-		fmt.Println("1")
-		grpcServer := grpc.NewServer()
-		pb.RegisterAntifraudServiceServer(grpcServer, &grpcCommands{commands: c.Commands})
-		fmt.Println("2")
-		// determine whether to use TLS
-		grpcServer.Serve(listener)
-		fmt.Println("3")
-	}
-	exitStatus, err := c.Run()
-	if err != nil {
-		log.Println(err)
-	}
-
-	os.Exit(exitStatus)
-}
-
-func (s *CliC) RunCli() {
+func (s *clisrv) RunCli() {
 	c := cli.NewCLI("server", "1.0.0")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
@@ -288,18 +204,78 @@ func (s *CliC) RunCli() {
 	os.Exit(exitStatus)
 }
 
-type CliC struct {
+type clisrv struct {
 	grpc *grpc.Server
 	app  *app.App
 }
 
-func NewCli(app *app.App) *CliC {
-	c := &CliC{
+func NewCli(app *app.App) *clisrv {
+	c := &clisrv{
 		app: app,
 	}
 	return c
 }
 
-func (s *CliC) Stop() {
+func (s *clisrv) Stop() {
 	s.grpc.GracefulStop()
+}
+
+func parseToStorage(arg ...string) storage.IP {
+	var ip storage.IP
+	ip.IP = arg[0]
+	ip.Mask = arg[1]
+	return ip
+}
+
+type Clean struct {
+}
+
+func (t *Clean) Help() string {
+	return "hello [arg0] [arg1] ... says hello to everyone"
+}
+
+type AddToWhiteList struct {
+}
+
+func (t *AddToWhiteList) Help() string {
+	return "hello [arg0] [arg1] ... says hello to everyone"
+}
+
+type AddToBlackList struct {
+}
+
+func (t *AddToBlackList) Help() string {
+	return "hello [arg0] [arg1] ... says hello to everyone"
+}
+
+type DeleteFromWhiteList struct {
+}
+
+func (d DeleteFromWhiteList) Help() string {
+	return "hello [arg0] [arg1] ... says hello to everyone"
+}
+
+func (d DeleteFromWhiteList) Run(args []string) int {
+	fmt.Println("Delete from white list command", args)
+	return 0
+}
+
+func (d DeleteFromWhiteList) Synopsis() string {
+	return "A sample command that says hello on stdout"
+}
+
+type DeleteFromBlackList struct {
+}
+
+func (d DeleteFromBlackList) Help() string {
+	return "hello [arg0] [arg1] ... says hello to everyone"
+}
+
+func (d DeleteFromBlackList) Run(args []string) int {
+	fmt.Println("Delete ip from bucket command", args)
+	return 0
+}
+
+func (d DeleteFromBlackList) Synopsis() string {
+	return "hello [arg0] [arg1] ... says hello to everyone"
 }

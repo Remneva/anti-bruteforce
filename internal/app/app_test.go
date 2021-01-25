@@ -2,6 +2,10 @@ package app
 
 import (
 	"context"
+	"log"
+	"testing"
+	"time"
+
 	"github.com/Remneva/anti-bruteforce/internal/logger"
 	"github.com/Remneva/anti-bruteforce/internal/redis"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
@@ -11,9 +15,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"log"
-	"testing"
-	"time"
 )
 
 func TestStoreSuite(t *testing.T) {

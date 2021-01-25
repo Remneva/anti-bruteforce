@@ -28,24 +28,21 @@ func main() {
 	defer cancel()
 	args := os.Args[1:]
 	var retcode int32
-	if args[0] == "clean" {
-		fmt.Println("CLeAN")
+
+	switch {
+	case args[0] == "clean":
 		r, _ := c.Clean(ctx, &pb.Arg{Args: os.Args[1:]})
 		retcode = r.Retcode
-	} else if args[0] == "addToWhiteList" {
-		fmt.Println("addToWhiteList")
-		r, _ := c.AddToWhiteList(ctx, &pb.Arg{Args: os.Args[1:]})
+	case args[0] == "addToWhiteList":
+		r, _ := c.Clean(ctx, &pb.Arg{Args: os.Args[1:]})
 		retcode = r.Retcode
-	} else if args[0] == "deleteFromWhiteList" {
-		fmt.Println("deleteFromWhiteList")
+	case args[0] == "deleteFromWhiteList":
 		r, _ := c.DeleteFromWhiteList(ctx, &pb.Arg{Args: os.Args[1:]})
 		retcode = r.Retcode
-	} else if args[0] == "addToBlackList" {
-		fmt.Println("addToBlackList")
+	case args[0] == "addToBlackList":
 		r, _ := c.AddToBlackList(ctx, &pb.Arg{Args: os.Args[1:]})
 		retcode = r.Retcode
-	} else if args[0] == "deleteFromBlackList" {
-		fmt.Println("deleteFromBlackList")
+	case args[0] == "deleteFromBlackList":
 		r, _ := c.DeleteFromBlackList(ctx, &pb.Arg{Args: os.Args[1:]})
 		retcode = r.Retcode
 	}

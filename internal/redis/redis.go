@@ -59,7 +59,7 @@ func (c *Client) GettingCount(key string) (int64, error) {
 	return count, nil
 }
 
-// устанавливаем срок действия инкремента 60 сек - по истечении минуты счетчик уменьшается на 1 ед
+// устанавливаем срок действия инкремента 60 сек - по истечении минуты счетчик уменьшается на 1 ед.
 func (c *Client) decrement(ctx context.Context, key string) {
 	time.Sleep(c.expiry)
 	incr := c.rdb.Decr(ctx, key)
