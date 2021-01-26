@@ -22,7 +22,7 @@ type Storage struct {
 }
 
 func NewDB(l *zap.Logger) *Storage {
-	db := &Storage{
+	db := &Storage{ //nolint
 		l: l,
 	}
 	return db

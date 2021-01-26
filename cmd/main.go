@@ -37,12 +37,12 @@ func main() {
 	defer cancel()
 	logg, err := logger.NewLogger(config.Logger.Level, env, config.Logger.Path)
 	if err != nil {
-		logg.Fatal("failed to create logger")
+		logg.Error("failed to create logger")
 	}
 	redisClient := redis.NewClient(logg, config.Redis.ExpiryPeriod)
 	redisClient, err = redisClient.RdbConnect(ctx, config.Redis.Address, config.Redis.Password)
 	if err != nil {
-		log.Fatal("failed to get redis connection")
+		logg.Error("failed to get redis connection")
 	}
 	storage := sql.NewDB(logg)
 	if err := storage.Connect(ctx, config.PSQL.DSN, logg); err != nil {

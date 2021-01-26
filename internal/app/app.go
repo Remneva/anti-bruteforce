@@ -14,9 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var isValidIP bool
-var isValidLogin bool
-var isValidPassword bool
+var isValidIP, isValidLogin, isValidPassword, white, black bool
 
 type App struct {
 	rdb           *redis.Client
@@ -45,14 +43,12 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 }
 
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
-	ip := storage.IP{
+	ip := storage.IP{ //nolint
 		IP: request.IP,
 	}
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	mu := sync.Mutex{}
-	var white bool
-	var black bool
 	go func() {
 		mu.Lock()
 		defer wg.Done()
@@ -75,48 +71,15 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		count, err := a.rdb.GettingCount(request.IP)
-		if err != nil {
-			return
-		}
-		if count > a.ipLimit {
-			if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
-				return
-			}
-			isValidIP = false
-			return
-		}
-		isValidIP = true
+		isValidIP = a.ipValidation(ctx, ip)
 	}()
 	go func() {
 		defer wg.Done()
-		count, err := a.rdb.GettingCount(request.Login)
-		if err != nil {
-			return
-		}
-		if count > a.loginLimit {
-			if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
-				return
-			}
-			isValidLogin = false
-			return
-		}
-		isValidLogin = true
+		isValidLogin = a.loginValidation(ctx, ip, request.Login)
 	}()
 	go func() {
 		defer wg.Done()
-		count, err := a.rdb.GettingCount(request.Password)
-		if err != nil {
-			return
-		}
-		if count > a.passwordLimit {
-			if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
-				return
-			}
-			isValidPassword = false
-			return
-		}
-		isValidPassword = true
+		isValidPassword = a.passwordValidation(ctx, ip, request.Password)
 	}()
 	wg.Wait()
 	if !isValidIP || !isValidLogin || !isValidPassword {
@@ -214,4 +177,52 @@ func (a *App) GetFromWhiteList(ip storage.IP) bool {
 		a.l.Info("User in white list", zap.String("ip", ip.IP))
 	}
 	return white
+}
+
+func (a *App) ipValidation(ctx context.Context, ip storage.IP) bool {
+	count, err := a.rdb.GettingCount(ip.IP)
+	if err != nil {
+		a.l.Error("getting count error", zap.Error(err))
+		return false
+	}
+	if count > a.ipLimit {
+		if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
+			a.l.Error("adding to black list error", zap.Error(err))
+			return false
+		}
+		return false
+	}
+	return true
+}
+
+func (a *App) loginValidation(ctx context.Context, ip storage.IP, login string) bool {
+	count, err := a.rdb.GettingCount(login)
+	if err != nil {
+		a.l.Error("getting count error", zap.Error(err))
+		return false
+	}
+	if count > a.loginLimit {
+		if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
+			a.l.Error("adding to black list error", zap.Error(err))
+			return false
+		}
+		return false
+	}
+	return true
+}
+
+func (a *App) passwordValidation(ctx context.Context, ip storage.IP, pass string) bool {
+	count, err := a.rdb.GettingCount(pass)
+	if err != nil {
+		a.l.Error("getting count error", zap.Error(err))
+		return false
+	}
+	if count > a.loginLimit {
+		if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
+			a.l.Error("adding to black list error", zap.Error(err))
+			return false
+		}
+		return false
+	}
+	return true
 }
