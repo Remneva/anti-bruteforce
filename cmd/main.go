@@ -62,7 +62,7 @@ func main() {
 func signalChan(srv ...server.Stopper) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-	fmt.Printf("Got %v...\n", <-signals) //nolint:makezero
+	fmt.Printf("Got %v...\n", <-signals) //nolint:forbidigo
 
 	for _, s := range srv {
 		s.Stop()
