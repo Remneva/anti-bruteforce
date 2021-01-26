@@ -25,7 +25,7 @@ func NewClient(l *zap.Logger, expiry time.Duration) *Client {
 	return c
 }
 func (c *Client) RdbConnect(ctx context.Context, address string, password string) (*Client, error) {
-	client := redis.NewClient(&redis.Options{ // nolint
+	client := redis.NewClient(&redis.Options{ //nolint:exhaustivestruct
 		Addr:     address,
 		Password: password, // no password set
 		DB:       0,        // use default DB

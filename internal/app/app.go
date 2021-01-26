@@ -43,7 +43,7 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 }
 
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
-	ip := storage.IP{ //nolint
+	ip := storage.IP{ //nolint:exhaustivestruct
 		IP: request.IP,
 	}
 	wg := sync.WaitGroup{}
