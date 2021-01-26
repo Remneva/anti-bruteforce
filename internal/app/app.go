@@ -28,7 +28,10 @@ type App struct {
 }
 
 func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *redis.Client, l *zap.Logger) *App {
-	limits, _ := db.Configs().Get(ctx)
+	limits, err := db.Configs().Get(ctx)
+	if err != nil {
+		l.Error("getting configuration error")
+	}
 	a := &App{
 		config:        c,
 		rdb:           rdb,
@@ -43,7 +46,7 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 }
 
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
-	ip := storage.IP{ //nolint:exhaustivestruct
+	ip := storage.IP{
 		IP: request.IP,
 	}
 	wg := sync.WaitGroup{}
@@ -113,11 +116,8 @@ func (a *App) CleanBucket(u storage.User) error {
 }
 
 func (a *App) AddToWhiteList(ctx context.Context, ip storage.IP) error {
-	var mip storage.IP
-	mip.IP = ip.IP
-	mip.Mask = ip.Mask
 	a.l.Info("ip", zap.String("ip", ip.IP))
-	if err := a.listRepo.AddToWhiteList(ctx, mip); err != nil {
+	if err := a.listRepo.AddToWhiteList(ctx, ip); err != nil {
 		a.l.Error("add to white list error", zap.Error(err))
 		return fmt.Errorf("add to white list error: %w", err)
 	}
@@ -125,10 +125,7 @@ func (a *App) AddToWhiteList(ctx context.Context, ip storage.IP) error {
 }
 
 func (a *App) AddToBlackList(ctx context.Context, ip storage.IP) error {
-	var mip storage.IP
-	mip.IP = ip.IP
-	mip.Mask = ip.Mask
-	if err := a.listRepo.AddToBlackList(ctx, mip); err != nil {
+	if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
 		a.l.Error("add to black list error", zap.Error(err))
 		return fmt.Errorf("add to black list error: %w", err)
 	}
@@ -136,10 +133,7 @@ func (a *App) AddToBlackList(ctx context.Context, ip storage.IP) error {
 }
 
 func (a *App) DeleteFromWhiteList(ctx context.Context, ip storage.IP) error {
-	var mip storage.IP
-	mip.IP = ip.IP
-	mip.Mask = ip.Mask
-	if err := a.listRepo.DeleteFromWhiteList(ctx, mip); err != nil {
+	if err := a.listRepo.DeleteFromWhiteList(ctx, ip); err != nil {
 		a.l.Error("delete from white list error", zap.Error(err))
 		return fmt.Errorf("delete from white list error: %w", err)
 	}
@@ -147,10 +141,7 @@ func (a *App) DeleteFromWhiteList(ctx context.Context, ip storage.IP) error {
 }
 
 func (a *App) DeleteFromBlackList(ctx context.Context, ip storage.IP) error {
-	var mip storage.IP
-	mip.IP = ip.IP
-	mip.Mask = ip.Mask
-	if err := a.listRepo.DeleteFromBlackList(ctx, mip); err != nil {
+	if err := a.listRepo.DeleteFromBlackList(ctx, ip); err != nil {
 		a.l.Error("delete from black list error", zap.Error(err))
 		return fmt.Errorf("delete from black list error: %w", err)
 	}

@@ -74,10 +74,10 @@ func (s *StoreSuite) TestValidation() {
 		Login: faker.Name(),
 		IP:    ip.IP,
 	}
-	count := 4
-	s.mockListDB.EXPECT().GetFromBlackList(ip).Return(false, nil).Times(4)
-	s.mockListDB.EXPECT().GetFromWhiteList(ip).Return(false, nil).Times(4)
-	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), ip).Return(nil).Times(4)
+	count := 3
+	s.mockListDB.EXPECT().GetFromBlackList(ip).Return(false, nil).Times(3)
+	s.mockListDB.EXPECT().GetFromWhiteList(ip).Return(false, nil).Times(3)
+	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), ip).Return(nil).Times(3)
 
 	for i := 0; i < count; i++ {
 		result, err = s.app.Validate(s.ctx, *auth)
@@ -94,10 +94,10 @@ func (s *StoreSuite) TestValidationIP() {
 	auth := &storage.Auth{
 		IP: ip.IP,
 	}
-	count := 4
-	s.mockListDB.EXPECT().GetFromBlackList(ip).Return(false, nil).Times(4)
-	s.mockListDB.EXPECT().GetFromWhiteList(ip).Return(false, nil).Times(4)
-	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), ip).Return(nil).Times(4)
+	count := 3
+	s.mockListDB.EXPECT().GetFromBlackList(ip).Return(false, nil).Times(3)
+	s.mockListDB.EXPECT().GetFromWhiteList(ip).Return(false, nil).Times(3)
+	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), ip).Return(nil).Times(3)
 
 	for i := 0; i < count; i++ {
 		auth.Password = faker.Password()
@@ -115,10 +115,10 @@ func (s *StoreSuite) TestValidationPass() {
 		Login:    faker.Name(),
 		Password: faker.Password(),
 	}
-	count := 5
-	s.mockListDB.EXPECT().GetFromBlackList(gomock.Any()).Return(false, nil).Times(3)
+	count := 4
+	s.mockListDB.EXPECT().GetFromBlackList(gomock.Any()).Return(false, nil).Times(2)
 	s.mockListDB.EXPECT().GetFromBlackList(gomock.Any()).Return(true, nil).Times(2)
-	s.mockListDB.EXPECT().GetFromWhiteList(gomock.Any()).Return(false, nil).Times(5)
+	s.mockListDB.EXPECT().GetFromWhiteList(gomock.Any()).Return(false, nil).Times(4)
 	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 
 	for i := 0; i < count; i++ {
@@ -136,10 +136,10 @@ func (s *StoreSuite) TestValidationLogin() {
 		IP:       faker.IPv4(),
 		Password: faker.Password(),
 	}
-	count := 5
-	s.mockListDB.EXPECT().GetFromBlackList(gomock.Any()).Return(false, nil).Times(3)
+	count := 4
+	s.mockListDB.EXPECT().GetFromBlackList(gomock.Any()).Return(false, nil).Times(2)
 	s.mockListDB.EXPECT().GetFromBlackList(gomock.Any()).Return(true, nil).Times(2)
-	s.mockListDB.EXPECT().GetFromWhiteList(gomock.Any()).Return(false, nil).Times(5)
+	s.mockListDB.EXPECT().GetFromWhiteList(gomock.Any()).Return(false, nil).Times(4)
 	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 
 	for i := 0; i < count; i++ {
@@ -219,13 +219,13 @@ func (s *StoreSuite) SetupTest() {
 	address := mr.Addr()
 	var z zapcore.Level
 	logg, _ := logger.NewLogger(z, "dev", "/dev/null")
-	rdb := redis.NewClient(logg, 25*time.Millisecond)
+	rdb := redis.NewClient(logg, 15*time.Millisecond)
 	rdbClient, _ := rdb.RdbConnect(s.ctx, address, "")
 	s.rdb = rdbClient
 	s.app = &App{
-		loginLimit:    3,
-		passwordLimit: 3,
-		ipLimit:       3,
+		loginLimit:    2,
+		passwordLimit: 2,
+		ipLimit:       2,
 		rdb:           rdb,
 		l:             logg,
 		listRepo:      s.mockListDB,

@@ -33,12 +33,12 @@ func main() {
 	if err != nil {
 		log.Fatal("failed to read config")
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	logg, err := logger.NewLogger(config.Logger.Level, env, config.Logger.Path)
 	if err != nil {
-		logg.Error("failed to create logger")
+		log.Fatal("failed to create logger")
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	redisClient := redis.NewClient(logg, config.Redis.ExpiryPeriod)
 	redisClient, err = redisClient.RdbConnect(ctx, config.Redis.Address, config.Redis.Password)
 	if err != nil {
@@ -49,8 +49,8 @@ func main() {
 		logg.Fatal("failed connection")
 	}
 	defer storage.Close()
-	application := app.NewApp(ctx, storage, config, redisClient, logg)
 
+	application := app.NewApp(ctx, storage, config, redisClient, logg)
 	grpc, _ := grpc2.NewServer(application, logg, config.Port.Grpc)
 	client := cli.New(application)
 	go signalChan(grpc, client)

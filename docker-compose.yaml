@@ -8,7 +8,7 @@ services:
     build: /
     depends_on:
       - postgres
-#      - redis
+      - redis
     restart: on-failure
     ports:
       - "8088:8088"
@@ -19,7 +19,7 @@ services:
       REG_SERVICE_SERVER_ADDR: ":8088"
     networks:
       - db
-#      - redis
+      - redis
 
   postgres:
     image: postgres:11.1
@@ -37,16 +37,16 @@ services:
     networks:
       - db
 
-#  redis:
-#    container_name: redis
-#    image: redis:4.0-alpine
-##    command:
-##        - 'redis-server'
-##        - '--loglevel ${REDIS_LOGLEVEL:-warning}'
-##        - '--databases 2'
-##        - '--maxmemory ${REDIS_MAXMEM:-50mb}'
-##        - '--maxmemory-policy ${REDIS_POLICY:-noeviction}'
-#    ports:
-#        - "6379:6379"
-#    networks:
-#      - redis
+  redis:
+    container_name: redis
+    image: redis:4.0-alpine
+    command:
+        - 'redis-server'
+        - '--loglevel ${REDIS_LOGLEVEL:-warning}'
+        - '--databases 2'
+        - '--maxmemory ${REDIS_MAXMEM:-50mb}'
+        - '--maxmemory-policy ${REDIS_POLICY:-noeviction}'
+    ports:
+        - "6379:6379"
+    networks:
+      - redis

@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-const text = "something strange"
+const text = "something strange happens"
 
 type grpcCommands struct {
 	commands map[string]cli.CommandFactory
@@ -54,7 +54,6 @@ func (s *Servercli) RunCli() {
 
 		pb.RegisterAntifraudServiceServer(grpcServer, &grpcCommands{commands: c.Commands, cli: s})
 
-		// determine whether to use TLS
 		err = grpcServer.Serve(listener)
 		if err != nil {
 			log.Fatalf("failed to start: %v", err)
@@ -159,16 +158,18 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	oldStderr := os.Stderr
 
 	// Backup the stdout
-	r, w, err := os.Pipe()
+	read, write, err := os.Pipe()
 	if err != nil {
 		return ret, nil, nil, fmt.Errorf("error: %w", err)
 	}
-	re, we, err := os.Pipe()
+	// Backup the stderr
+	reade, writee, err := os.Pipe()
 	if err != nil {
 		return ret, nil, nil, fmt.Errorf("error: %w", err)
 	}
-	os.Stdout = w
-	os.Stderr = we
+	// assigne stdout and stderr to the input of the pipe
+	os.Stdout = write
+	os.Stderr = writee
 
 	runner, err := cf()
 	if err != nil {
@@ -181,20 +182,20 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	// copy the output in a separate goroutine so printing can't block indefinitely
 	go func() {
 		var buf bytes.Buffer
-		_, err = io.Copy(&buf, r)
+		_, err = io.Copy(&buf, read)
 		outC <- buf.Bytes()
 	}()
 	// copy the output in a separate goroutine so printing can't block indefinitely
 	go func() {
 		var buf bytes.Buffer
-		_, err = io.Copy(&buf, re)
+		_, err = io.Copy(&buf, reade)
 
 		errC <- buf.Bytes()
 	}()
 
 	// back to normal state
-	w.Close()
-	we.Close()
+	write.Close()
+	writee.Close()
 	os.Stdout = oldStdout // restoring the real stdout
 	os.Stderr = oldStderr
 	stdout := <-outC

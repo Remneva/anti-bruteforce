@@ -1,8 +1,8 @@
 [psql]
-dsn = "host=localhost port=5432 user=test password=test dbname=exampledb sslmode=disable"
+dsn = "host=localhost port=5432 user=mary password=mary dbname=exampledb sslmode=disable"
 [logger]
 level = "INFO"
-path = "/tmp/tmpdir/log.log"
+path = "/tmp/tmpdir/antifrod.log"
 [port]
 http = ":8082"
 grpc = "localhost:50051"
