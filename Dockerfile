@@ -7,12 +7,11 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
-COPY .. .
-RUN find
-RUN CGO_ENABLED=0 go build -o /opt/anti_bruteforce/cmd
+COPY . .
+RUN CGO_ENABLED=0 go build -v -o "./bin/antifrod" -ldflags "-X main.release="develop" -X main.buildDate=2021-01-26T18:32:26 -X main.gitHash=e452de9" ./cmd
 
 # Release
 FROM alpine:latest
-COPY --from=build-env /opt/service/anti_bruteforce /bin/anti_bruteforce
-ENTRYPOINT ["/bin/anti_bruteforce_service"]
+COPY --from=build-env /opt/anti_bruteforce /bin/antifrod
+ENTRYPOINT ["/bin/antifrod"]
 
