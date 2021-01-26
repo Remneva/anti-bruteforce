@@ -1,8 +1,9 @@
-package sql
+package intagration_test
 
 import (
 	"context"
 	"fmt"
+	"github.com/Remneva/anti-bruteforce/internal/storage/sql"
 	"testing"
 
 	"github.com/Remneva/anti-bruteforce/internal/logger"
@@ -19,7 +20,7 @@ func TestStoreSuite(t *testing.T) {
 
 type StoreSuite struct {
 	suite.Suite
-	st  *Storage
+	st  *sql.Storage
 	ctx context.Context
 	log *zap.Logger
 }
@@ -29,7 +30,7 @@ func (s *StoreSuite) SetupTest() {
 
 	var z zapcore.Level
 	logg, _ := logger.NewLogger(z, "dev", "/dev/null")
-	store := NewDB(logg)
+	store := sql.NewDB(logg)
 	if err := store.Connect(s.ctx, "host=localhost port=5432 user=mary password=mary dbname=exampledb sslmode=disable", logg); err != nil {
 		logg.Fatal("failed connection")
 	}

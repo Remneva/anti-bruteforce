@@ -15,7 +15,7 @@ import (
 func main() {
 	ipaddr := "localhost"
 	port := "1234"
-	fmt.Printf("ipaddr: %s, port %s\n", ipaddr, port) // nolint:forbidigo
+	fmt.Printf("ipaddr: %s, port %s\n", ipaddr, port) // nolint:makezero
 	addr := net.JoinHostPort(ipaddr, port)
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
