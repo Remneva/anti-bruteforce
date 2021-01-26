@@ -86,8 +86,6 @@ func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, arg *pb.Arg) (*p
 }
 
 func (t *Clean) Run(args []string) int {
-	fmt.Println("CleanBucket command", args)
-
 	return 0
 }
 
@@ -96,7 +94,6 @@ func (t *Clean) Synopsis() string {
 }
 
 func (t *AddToWhiteList) Run(args []string) int {
-	fmt.Println("AddToWhiteList command", args)
 	return 0
 }
 
@@ -105,7 +102,6 @@ func (t *AddToWhiteList) Synopsis() string {
 }
 
 func (t *AddToBlackList) Run(args []string) int {
-	fmt.Println("AddToBlackList command", args)
 	return 0
 }
 

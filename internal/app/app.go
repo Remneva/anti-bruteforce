@@ -14,6 +14,10 @@ import (
 	"go.uber.org/zap"
 )
 
+var isValidIP bool
+var isValidLogin bool
+var isValidPassword bool
+
 type App struct {
 	rdb           *redis.Client
 	l             *zap.Logger
@@ -44,36 +48,22 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 	ip := storage.IP{
 		IP: request.IP,
 	}
-
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	mu := sync.Mutex{}
 	var white bool
 	var black bool
-	var err error
 	go func() {
 		mu.Lock()
 		defer wg.Done()
 		defer mu.Unlock()
-		white, err = a.listRepo.GetFromWhiteList(ip)
-		if err != nil {
-			a.l.Error("error while checking white list", zap.Error(err))
-		}
-		if white {
-			a.l.Info("User in white list", zap.String("ip", request.IP))
-		}
+		white = a.GetFromWhiteList(ip)
 	}()
 	go func() {
 		mu.Lock()
 		defer wg.Done()
 		defer mu.Unlock()
-		black, err = a.listRepo.GetFromBlackList(ip)
-		if err != nil {
-			a.l.Error("error while checking black list", zap.Error(err))
-		}
-		if black {
-			a.l.Info("User in black list", zap.String("ip", request.IP))
-		}
+		black = a.GetFromBlackList(ip)
 	}()
 	wg.Wait()
 	if white {
@@ -82,9 +72,6 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 		return false, nil
 	}
 
-	var isValidIP bool
-	var isValidLogin bool
-	var isValidPassword bool
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
@@ -93,7 +80,6 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 			return
 		}
 		if count > a.ipLimit {
-			a.l.Info("count > limit ip")
 			if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
 				return
 			}
@@ -109,7 +95,6 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 			return
 		}
 		if count > a.loginLimit {
-			a.l.Info("count > limit login")
 			if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
 				return
 			}
@@ -125,8 +110,6 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 			return
 		}
 		if count > a.passwordLimit {
-			a.l.Info("count > limit pass")
-
 			if err := a.listRepo.AddToBlackList(ctx, ip); err != nil {
 				return
 			}
@@ -209,4 +192,26 @@ func (a *App) DeleteFromBlackList(ctx context.Context, ip storage.IP) error {
 		return fmt.Errorf("delete from black list error: %w", err)
 	}
 	return nil
+}
+
+func (a *App) GetFromBlackList(ip storage.IP) bool {
+	black, err := a.listRepo.GetFromBlackList(ip)
+	if err != nil {
+		a.l.Error("error while checking black list", zap.Error(err))
+	}
+	if black {
+		a.l.Info("User in black list", zap.String("ip", ip.IP))
+	}
+	return black
+}
+
+func (a *App) GetFromWhiteList(ip storage.IP) bool {
+	white, err := a.listRepo.GetFromWhiteList(ip)
+	if err != nil {
+		a.l.Error("error while checking white list", zap.Error(err))
+	}
+	if white {
+		a.l.Info("User in white list", zap.String("ip", ip.IP))
+	}
+	return white
 }

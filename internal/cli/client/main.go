@@ -47,5 +47,5 @@ func main() {
 		retcode = r.Retcode
 	}
 
-	log.Println(">msg: ", retcode)
+	log.Println(retcode)
 }

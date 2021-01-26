@@ -46,7 +46,7 @@ func (c *Client) GettingCount(key string) (int64, error) {
 	// count-- after timeout
 	go c.decrement(ctx, key)
 	count, err := incr.Result()
-	c.l.Info("increment for key", zap.String("key", key), zap.Int64("incr", count))
+	c.l.Info("increment", zap.String("key", key), zap.Int64("incr", count))
 	if err != nil {
 		c.l.Error("getting increment error", zap.String("key", key))
 		return 0, fmt.Errorf("getting increment error: %w", err)
@@ -64,7 +64,7 @@ func (c *Client) decrement(ctx context.Context, key string) {
 	time.Sleep(c.expiry)
 	incr := c.rdb.Decr(ctx, key)
 	count, _ := incr.Result()
-	c.l.Info("decrement fo key", zap.String("key", key), zap.Int64("currently count", count))
+	c.l.Info("decrement", zap.String("key", key), zap.Int64("currently count", count))
 }
 
 func (c *Client) setTimeoutForKey(key string) error {
