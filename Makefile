@@ -14,13 +14,13 @@ version: build
 	$(BIN) version
 
 test:
-	go test -race -count 100 -timeout=30s ./internal/app/...
+	go test -race -count 90 -timeout=30s ./internal/app/...
 
 lint:
 	golangci-lint run ./...
 
 install-lint-deps:
-	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.30.0
+	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.34.0
 
 lint: install-lint-deps
 	golangci-lint run ./...

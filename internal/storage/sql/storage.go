@@ -7,6 +7,9 @@ import (
 	"sync"
 
 	"github.com/Remneva/anti-bruteforce/internal/storage"
+
+	// Postgres driver.
+	_ "github.com/jackc/pgx/v4/stdlib"
 	"go.uber.org/zap"
 )
 
@@ -22,7 +25,7 @@ type Storage struct {
 }
 
 func NewDB(l *zap.Logger) *Storage {
-	db := &Storage{ //nolint:exhaustivestruct
+	db := &Storage{
 		l: l,
 	}
 	return db

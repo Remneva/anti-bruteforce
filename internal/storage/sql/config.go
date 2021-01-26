@@ -17,7 +17,7 @@ func (s *Storage) Get(ctx context.Context) (map[string]int64, error) {
 		SELECT * FROM configurations
 	`)
 	if err != nil {
-		return nil, fmt.Errorf("open connection error %w", err)
+		return nil, fmt.Errorf("query error %w", err)
 	}
 	defer rows.Close()
 	configs := make(map[string]int64, 3)
@@ -27,8 +27,7 @@ func (s *Storage) Get(ctx context.Context) (map[string]int64, error) {
 			&c.Key,
 			&c.Value,
 		); err != nil {
-			//		s.l.Error("Get event error", zap.String("query", rows.Err().Error()))
-			return nil, fmt.Errorf("open connection error %w", err)
+			return nil, fmt.Errorf("query error %w", err)
 		}
 		configs[c.Key] = c.Value
 	}

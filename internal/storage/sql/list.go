@@ -105,3 +105,49 @@ func (s *Storage) GetFromBlackList(ip storage.IP) (bool, error) {
 	}
 	return true, nil
 }
+
+func (s *Storage) GetAllFromWhiteList(ctx context.Context) ([]string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	var address storage.Address
+	var list []string
+	rows, err := s.DB.QueryContext(ctx, "SELECT * FROM whitelist")
+	if err != nil {
+		return nil, fmt.Errorf("query error %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		if err = rows.Scan(
+			&address.ID,
+			&address.IP,
+			&address.Mask,
+		); err != nil {
+			return nil, fmt.Errorf("scan error %w", err)
+		}
+		list = append(list, address.IP)
+	}
+	return list, nil
+}
+
+func (s *Storage) GetAllFromBlackList(ctx context.Context) ([]string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	var address storage.Address
+	var list []string
+	rows, err := s.DB.QueryContext(ctx, "SELECT * FROM blacklist")
+	if err != nil {
+		return nil, fmt.Errorf("query error %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		if err = rows.Scan(
+			&address.ID,
+			&address.IP,
+			&address.Mask,
+		); err != nil {
+			return nil, fmt.Errorf("scan error %w", err)
+		}
+		list = append(list, address.IP)
+	}
+	return list, nil
+}

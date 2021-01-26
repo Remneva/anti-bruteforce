@@ -25,6 +25,8 @@ type ListStorage interface {
 	DeleteFromBlackList(ctx context.Context, ip IP) error
 	GetFromWhiteList(ip IP) (bool, error)
 	GetFromBlackList(ip IP) (bool, error)
+	GetAllFromWhiteList(ctx context.Context) ([]string, error)
+	GetAllFromBlackList(ctx context.Context) ([]string, error)
 }
 
 type IP struct {
@@ -46,4 +48,10 @@ type Auth struct {
 type User struct {
 	Login string
 	IP    string
+}
+
+type Address struct {
+	ID   int64
+	IP   string
+	Mask string
 }

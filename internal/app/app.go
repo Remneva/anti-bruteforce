@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"net"
 	"sync"
 
 	"github.com/Remneva/anti-bruteforce/configs"
@@ -56,13 +57,13 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 		mu.Lock()
 		defer wg.Done()
 		defer mu.Unlock()
-		white = a.GetFromWhiteList(ip)
+		white = a.containsInWhiteList(ctx, request.IP)
 	}()
 	go func() {
 		mu.Lock()
 		defer wg.Done()
 		defer mu.Unlock()
-		black = a.GetFromBlackList(ip)
+		black = a.containsInBlackList(ctx, request.IP)
 	}()
 	wg.Wait()
 	if white {
@@ -216,4 +217,45 @@ func (a *App) passwordValidation(ctx context.Context, ip storage.IP, pass string
 		return false
 	}
 	return true
+}
+
+func parseAddress(ip string) (net.IPNet, error) {
+	_, ipnet, err := net.ParseCIDR(ip)
+	if err != nil {
+		return *ipnet, fmt.Errorf("parse address error: %w", err)
+	}
+	return *ipnet, nil
+}
+
+func (a *App) containsInWhiteList(ctx context.Context, ip string) bool {
+	ipnet, _ := parseAddress(ip)
+	list, err := a.listRepo.GetAllFromWhiteList(ctx)
+	if err != nil {
+		a.l.Error("get list error", zap.Error(err))
+		return false
+	}
+	for _, pr := range list {
+		p := net.ParseIP(pr)
+		result := ipnet.Contains(p)
+		if result {
+			return true
+		}
+	}
+	return false
+}
+func (a *App) containsInBlackList(ctx context.Context, ip string) bool {
+	ipnet, _ := parseAddress(ip)
+	list, err := a.listRepo.GetAllFromBlackList(ctx)
+	if err != nil {
+		a.l.Error("get list error", zap.Error(err))
+		return false
+	}
+	for _, pr := range list {
+		p := net.ParseIP(pr)
+		result := ipnet.Contains(p)
+		if result {
+			return true
+		}
+	}
+	return false
 }
