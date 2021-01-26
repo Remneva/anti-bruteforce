@@ -23,6 +23,50 @@ type grpcCommands struct {
 	cli      *Servercli
 }
 
+func (s *Servercli) RunCli() {
+	c := cli.NewCLI("server", "1.0.0")
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"clean": func() (cli.Command, error) {
+			return &Clean{}, nil
+		},
+		"addToWhiteList": func() (cli.Command, error) {
+			return &AddToWhiteList{}, nil
+		},
+		"addToBlackList": func() (cli.Command, error) {
+			return &AddToBlackList{}, nil
+		},
+		"deleteFromWhiteList": func() (cli.Command, error) {
+			return &DeleteFromWhiteList{}, nil
+		},
+		"deleteFromBlackList": func() (cli.Command, error) {
+			return &DeleteFromBlackList{}, nil
+		},
+	}
+
+	if len(c.Args) == 0 {
+		listener, err := net.Listen("tcp", "127.0.0.1:1234")
+		if err != nil {
+			log.Fatalf("failed to listen: %v", err)
+		}
+		grpcServer := grpc.NewServer()
+		s.grpc = grpcServer
+
+		pb.RegisterAntifraudServiceServer(grpcServer, &grpcCommands{commands: c.Commands, cli: s})
+
+		// determine whether to use TLS
+		err = grpcServer.Serve(listener)
+		if err != nil {
+			log.Fatalf("failed to start: %v", err)
+		}
+	}
+	exitStatus, err := c.Run()
+	if err != nil {
+		log.Println(err)
+	}
+	os.Exit(exitStatus)
+}
+
 func (g *grpcCommands) Clean(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
 	ret, stdout, stderr, err := wrapper(g.commands["clean"], arg.Args)
 	if err != nil {
@@ -156,54 +200,6 @@ func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error
 	stdout := <-outC
 	stderr := <-errC
 	return ret, stdout, stderr, nil
-}
-
-func (s *Servercli) RunCli() {
-	c := cli.NewCLI("server", "1.0.0")
-	c.Args = os.Args[1:]
-	c.Commands = map[string]cli.CommandFactory{
-		"clean": func() (cli.Command, error) {
-			return &Clean{}, nil
-		},
-		"addToWhiteList": func() (cli.Command, error) {
-			return &AddToWhiteList{}, nil
-		},
-		"addToBlackList": func() (cli.Command, error) {
-			return &AddToBlackList{}, nil
-		},
-		"deleteFromWhiteList": func() (cli.Command, error) {
-			return &DeleteFromWhiteList{}, nil
-		},
-		"deleteFromBlackList": func() (cli.Command, error) {
-			return &DeleteFromBlackList{}, nil
-		},
-	}
-
-	if len(c.Args) == 0 {
-		listener, err := net.Listen("tcp", "127.0.0.1:1234")
-		if err != nil {
-			log.Fatalf("failed to listen: %v", err)
-		}
-		fmt.Println("1")
-		grpcServer := grpc.NewServer()
-		s.grpc = grpcServer
-
-		pb.RegisterAntifraudServiceServer(grpcServer, &grpcCommands{commands: c.Commands, cli: s})
-		fmt.Println("2")
-
-		// determine whether to use TLS
-		fmt.Println("3")
-		err = grpcServer.Serve(listener)
-		if err != nil {
-			log.Fatalf("failed to start: %v", err)
-		}
-	}
-	exitStatus, err := c.Run()
-	if err != nil {
-		log.Println(err)
-	}
-
-	os.Exit(exitStatus)
 }
 
 type Servercli struct {
