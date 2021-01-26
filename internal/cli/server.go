@@ -254,7 +254,6 @@ func (d DeleteFromWhiteList) Help() string {
 }
 
 func (d DeleteFromWhiteList) Run(args []string) int {
-	fmt.Println("Delete from white list command", args)
 	return 0
 }
 
@@ -270,7 +269,6 @@ func (d DeleteFromBlackList) Help() string {
 }
 
 func (d DeleteFromBlackList) Run(args []string) int {
-	fmt.Println("Delete ip from bucket command", args)
 	return 0
 }
 
