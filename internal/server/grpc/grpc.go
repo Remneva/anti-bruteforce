@@ -85,7 +85,7 @@ func (s *Server) CleanBucket(ctx context.Context, req *pb.User) (*pb.Empty, erro
 	us.IP = req.Ip
 	us.Login = req.Login
 	if err := s.app.CleanBucket(us); err != nil {
-		s.l.Error("servr error", zap.Error(err))
+		s.l.Error("server error", zap.Error(err))
 		return &pb.Empty{}, status.Error(codes.Internal, err.Error())
 	}
 	return &pb.Empty{}, nil

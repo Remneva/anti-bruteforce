@@ -51,7 +51,7 @@ func (s *StoreSuite) TestValidationBlackList() {
 	s.Require().False(result)
 }
 
-func (s *StoreSuite) TestValidationWhiteList() {
+func (s *StoreSuite) TestValidationWhiteListOk() {
 	var ip storage.IP
 	ip.IP = "192.1.1.0/25"
 	list2 := []string{"192.1.1.0", "255.255.255.128"}
@@ -65,27 +65,6 @@ func (s *StoreSuite) TestValidationWhiteList() {
 	s.mockListDB.EXPECT().GetAllFromWhiteList(s.ctx).Return(list2, nil).Times(1)
 
 	result, err := s.app.Validate(s.ctx, *auth)
-	s.Require().NoError(err)
-	s.Require().True(result)
-}
-
-func (s *StoreSuite) TestValidationWhiteListOk() {
-	var ip storage.IP
-	var result bool
-	var err error
-	ip.IP = "192.1.1.0/25"
-	list2 := []string{"192.1.1.0", "255.255.255.128"}
-	list1 := []string{"0.0.0"}
-	auth := &storage.Auth{
-		Login: faker.Name(),
-		IP:    ip.IP,
-	}
-	count := 3 // > limit app
-	s.mockListDB.EXPECT().GetAllFromBlackList(s.ctx).Return(list1, nil).Times(3)
-	s.mockListDB.EXPECT().GetAllFromWhiteList(s.ctx).Return(list2, nil).Times(3)
-	for i := 0; i < count; i++ {
-		result, err = s.app.Validate(s.ctx, *auth)
-	}
 	s.Require().NoError(err)
 	s.Require().True(result)
 }
@@ -135,7 +114,7 @@ func (s *StoreSuite) TestValidationIP() {
 	s.Require().False(result)
 }
 
-func (s *StoreSuite) TestValidationPass() {
+func (s *StoreSuite) TestValidationPassword() {
 	var result bool
 	var err error
 	list1 := []string{"0.0.0"}
@@ -143,10 +122,10 @@ func (s *StoreSuite) TestValidationPass() {
 		Login:    faker.Name(),
 		Password: faker.Password(),
 	}
-	count := 4
-	s.mockListDB.EXPECT().GetAllFromBlackList(s.ctx).Return(list1, nil).Times(4)
-	s.mockListDB.EXPECT().GetAllFromWhiteList(s.ctx).Return(list1, nil).Times(4)
-	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), gomock.Any()).Return(nil).Times(4)
+	count := 3
+	s.mockListDB.EXPECT().GetAllFromBlackList(s.ctx).Return(list1, nil).Times(3)
+	s.mockListDB.EXPECT().GetAllFromWhiteList(s.ctx).Return(list1, nil).Times(3)
+	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), gomock.Any()).Return(nil).Times(3)
 
 	for i := 0; i < count; i++ {
 		auth.IP = faker.IPv4() + "/25"
@@ -165,10 +144,10 @@ func (s *StoreSuite) TestValidationLogin() {
 	}
 	list1 := []string{"0.0.0", "192.1.1.0"}
 	list2 := []string{"0.0.0"}
-	count := 4
-	s.mockListDB.EXPECT().GetAllFromBlackList(s.ctx).Return(list1, nil).Times(4)
-	s.mockListDB.EXPECT().GetAllFromWhiteList(s.ctx).Return(list2, nil).Times(4)
-	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), gomock.Any()).Return(nil).Times(4)
+	count := 3
+	s.mockListDB.EXPECT().GetAllFromBlackList(s.ctx).Return(list1, nil).Times(3)
+	s.mockListDB.EXPECT().GetAllFromWhiteList(s.ctx).Return(list2, nil).Times(3)
+	s.mockListDB.EXPECT().AddToBlackList(gomock.Any(), gomock.Any()).Return(nil).Times(3)
 
 	for i := 0; i < count; i++ {
 		auth.Login = faker.Name()
@@ -178,7 +157,7 @@ func (s *StoreSuite) TestValidationLogin() {
 	s.Require().False(result)
 }
 
-func (s *StoreSuite) TestValidationSuccess() {
+func (s *StoreSuite) TestValidationOk() {
 	var ip storage.IP
 	ip.IP = faker.IPv4() + "/25"
 	auth := &storage.Auth{
@@ -231,7 +210,7 @@ func (s *StoreSuite) TestAddToBlackList() {
 	s.Require().NoError(err)
 }
 
-func (s *StoreSuite) TestContainsIpBlackList() {
+func (s *StoreSuite) TestContainsIpBlackListOk() {
 	var ip storage.IP
 	ip.IP = "192.1.1.0/25"
 	list := []string{"192.1.1.0", "255.255.255.128"}
@@ -253,7 +232,7 @@ func (s *StoreSuite) TestContainsIpBlackListNegative() {
 	s.Require().False(result)
 }
 
-func (s *StoreSuite) TestContainsIpWhiteList() {
+func (s *StoreSuite) TestContainsIpWhiteListOk() {
 	var ip storage.IP
 	ip.IP = "192.1.1.0/25"
 	list := []string{"192.1.1.0", "255.255.255.128"}

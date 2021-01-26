@@ -26,6 +26,7 @@ type App struct {
 	passwordLimit int64
 	ipLimit       int64
 	config        configs.Config
+	mu            sync.Mutex
 }
 
 func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *redis.Client, l *zap.Logger) *App {
@@ -42,27 +43,22 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 		ipLimit:       limits["ipAttempts"],
 		loginLimit:    limits["loginAttempts"],
 		passwordLimit: limits["passwordAttempts"],
+		mu:            sync.Mutex{},
 	}
 	return a
 }
 
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
-	ip := storage.IP{
-		IP: request.IP,
-	}
+	ip := storage.IP{IP: request.IP}
+
 	wg := sync.WaitGroup{}
 	wg.Add(2)
-	mu := sync.Mutex{}
 	go func() {
-		mu.Lock()
 		defer wg.Done()
-		defer mu.Unlock()
 		white = a.containsInWhiteList(ctx, request.IP)
 	}()
 	go func() {
-		mu.Lock()
 		defer wg.Done()
-		defer mu.Unlock()
 		black = a.containsInBlackList(ctx, request.IP)
 	}()
 	wg.Wait()
@@ -172,6 +168,8 @@ func (a *App) GetFromWhiteList(ip storage.IP) bool {
 }
 
 func (a *App) ipValidation(ctx context.Context, ip storage.IP) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	count, err := a.rdb.GettingCount(ip.IP)
 	if err != nil {
 		a.l.Error("getting count error", zap.Error(err))
@@ -188,6 +186,8 @@ func (a *App) ipValidation(ctx context.Context, ip storage.IP) bool {
 }
 
 func (a *App) loginValidation(ctx context.Context, ip storage.IP, login string) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	count, err := a.rdb.GettingCount(login)
 	if err != nil {
 		a.l.Error("getting count error", zap.Error(err))
@@ -204,6 +204,8 @@ func (a *App) loginValidation(ctx context.Context, ip storage.IP, login string) 
 }
 
 func (a *App) passwordValidation(ctx context.Context, ip storage.IP, pass string) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	count, err := a.rdb.GettingCount(pass)
 	if err != nil {
 		a.l.Error("getting count error", zap.Error(err))
@@ -228,6 +230,8 @@ func parseAddress(ip string) (net.IPNet, error) {
 }
 
 func (a *App) containsInWhiteList(ctx context.Context, ip string) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	ipnet, _ := parseAddress(ip)
 	list, err := a.listRepo.GetAllFromWhiteList(ctx)
 	if err != nil {
@@ -244,6 +248,8 @@ func (a *App) containsInWhiteList(ctx context.Context, ip string) bool {
 	return false
 }
 func (a *App) containsInBlackList(ctx context.Context, ip string) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	ipnet, _ := parseAddress(ip)
 	list, err := a.listRepo.GetAllFromBlackList(ctx)
 	if err != nil {
