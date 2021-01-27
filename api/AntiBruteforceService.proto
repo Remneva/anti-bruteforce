@@ -3,7 +3,8 @@ syntax = "proto3";
 package antiBruteForce;
 
 option go_package = ".;pb";
-import "google/protobuf/empty.proto";
+
+message Empty {}
 
 message Authorization {
   string login = 1;
@@ -15,32 +16,32 @@ message Result{
   bool result = 1;
 }
 
-message CleanBucket{
+message User{
   string login = 1;
   string ip = 2;
 }
 
-message AddToList{
+message Ip{
   string ip = 1;
   string mask = 2;
 }
 
-service AntiBruteForce {
+service AntiBruteForceService {
   rpc Auth (Authorization) returns (Result){
   }
 
-  rpc CleanBucket (CleanBucket) returns (google.protobuf.Empty){
+  rpc CleanBucket (User) returns (Empty){
   }
 
-  rpc AddToWhiteList(AddToList) returns (google.protobuf.Empty){
+  rpc AddToWhiteList(Ip) returns (Empty){
   }
 
-  rpc DeleteFromWhiteList (AddToList) returns (google.protobuf.Empty){
+  rpc DeleteFromWhiteList (Ip) returns (Empty){
   }
 
-  rpc AddToBlackList(AddToList) returns (google.protobuf.Empty){
+  rpc AddToBlackList (Ip) returns (Empty){
   }
 
-  rpc DeleteFromBlackList (AddToList) returns (google.protobuf.Empty){
+  rpc DeleteFromBlackList (Ip) returns (Empty){
   }
 }
