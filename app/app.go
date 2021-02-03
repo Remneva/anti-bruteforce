@@ -62,9 +62,12 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 		black = a.containsInBlackList(ctx, request.IP)
 	}()
 	wg.Wait()
-	if white {
+	switch {
+	case white:
 		return true, nil
-	} else if black {
+	case black:
+		return false, nil
+	case black && white:
 		return false, nil
 	}
 
@@ -86,11 +89,8 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 		a.l.Info("Anti-Fraud Protection", zap.String("login", request.Login))
 		return false, nil
 	}
-	if isValidIP && isValidLogin && isValidPassword {
-		a.l.Info("Successful authorization", zap.String("login", request.Login))
-		return true, nil
-	}
-	return false, fmt.Errorf("ip cant be contains in white && black list, but contains")
+	a.l.Info("Successful authorization", zap.String("login", request.Login))
+	return true, nil
 }
 
 func (a *App) CleanBucket(u storage.User) error {

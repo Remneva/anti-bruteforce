@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/Remneva/anti-bruteforce/app"
 	"github.com/Remneva/anti-bruteforce/configs"
-	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/cli"
 	"github.com/Remneva/anti-bruteforce/internal/logger"
 	"github.com/Remneva/anti-bruteforce/internal/redis"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/Remneva/anti-bruteforce/internal/app"
+	"github.com/Remneva/anti-bruteforce/app"
 	"github.com/Remneva/anti-bruteforce/internal/server"
 	"github.com/Remneva/anti-bruteforce/internal/server/pb"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
