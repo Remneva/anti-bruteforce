@@ -39,12 +39,12 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.33
-          working-directory: ${{env.BRANCH}}
+          working-directory: anti-bruteforce
 
       - name: Makefile
         run: |
           make lint
-        working-directory: ${{env.BRANCH}}
+        working-directory: anti-bruteforce
 
   test:
     runs-on: ubuntu-latest
@@ -62,13 +62,13 @@ jobs:
 
       - name: Get dependencies
         run: go mod download
-        working-directory: ${{env.BRANCH}}
+        working-directory: anti-bruteforce
 
       - name: Unit tests
         run: |
           make test
           make build
-        working-directory: ${{env.BRANCH}}
+        working-directory: anti-bruteforce
 
   integration-test:
     runs-on: ubuntu-latest
@@ -86,9 +86,9 @@ jobs:
 
       - name: Get dependencies
         run: go mod download
-        working-directory: ${{env.BRANCH}}
+        working-directory: anti-bruteforce
 
       - name: Makefile
         run: |
           make api-test
-        working-directory: ${{env.BRANCH}}
+        working-directory: anti-bruteforce
