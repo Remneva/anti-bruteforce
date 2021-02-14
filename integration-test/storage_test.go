@@ -49,8 +49,9 @@ func TestStorage(t *testing.T) {
 		require.NoError(t, err)
 
 		ok, err := store.GetFromBlackList(ip)
+		require.NoError(t, err)
 		require.Equal(t, ok, true)
-		require.Errorf(t, err, "event does not exist")
+
 	})
 
 	t.Run("Delete from Black List", func(t *testing.T) {
