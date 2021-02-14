@@ -9,6 +9,7 @@ on:
 env:
   GO111MODULE: "on"
   GOPROXY: "https://proxy.golang.org"
+  working-directory: ./anti-bruteforce
 
 jobs:
 
@@ -39,12 +40,12 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.33
-          working-directory: /anti-bruteforce
+          working-directory: ${{env.working-directory}}
 
       - name: Makefile
         run: |
           make lint
-        working-directory: /anti-bruteforce
+        working-directory: ${{env.working-directory}}
 
   test:
     runs-on: ubuntu-latest
@@ -62,13 +63,13 @@ jobs:
 
       - name: Get dependencies
         run: go mod download
-        working-directory: /anti-bruteforce
+        working-directory: ${{env.working-directory}}
 
       - name: Unit tests
         run: |
           make test
           make build
-        working-directory: /anti-bruteforce
+        working-directory: ${{env.working-directory}}
 
   integration-test:
     runs-on: ubuntu-latest
@@ -86,9 +87,9 @@ jobs:
 
       - name: Get dependencies
         run: go mod download
-        working-directory: /anti-bruteforce
+        working-directory: ${{env.working-directory}}
 
       - name: Makefile
         run: |
           make api-test
-        working-directory: /anti-bruteforce
+        working-directory: ${{env.working-directory}}
