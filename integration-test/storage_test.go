@@ -47,7 +47,6 @@ func TestStorage(t *testing.T) {
 
 		err = store.AddToBlackList(ctx, ip)
 		require.NoError(t, err)
-		require.Errorf(t, err, "Database query failed")
 
 		ok, err := store.GetFromBlackList(ip)
 		require.Equal(t, ok, true)

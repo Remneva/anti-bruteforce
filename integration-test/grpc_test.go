@@ -67,7 +67,7 @@ func TestServerGRPC(t *testing.T) {
 			fmt.Printf("fail to dial: %v\n", err)
 		}
 		require.Errorf(t, err, "Database query failed")
-		assert.Equal(t, "", err.Error())
+		assert.Equal(t, "rpc error: code = InvalidArgument desc = login, password or ip can`t be empty", err.Error())
 	})
 
 }
