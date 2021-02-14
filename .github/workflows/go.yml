@@ -9,7 +9,7 @@ on:
 env:
   GO111MODULE: "on"
   GOPROXY: "https://proxy.golang.org"
-  working-directory: ./anti-bruteforce
+  working-directory: .
 
 jobs:
 
