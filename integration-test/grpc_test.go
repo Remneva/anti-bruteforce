@@ -62,12 +62,12 @@ func TestServerGRPC(t *testing.T) {
 				Password: "qwerty",
 			},
 		}
-		response, err := client.Auth(ctx, request)
+		_, err := client.Auth(ctx, request)
 		if err != nil {
 			fmt.Printf("fail to dial: %v\n", err)
 		}
-		require.Error(t, err)
-		assert.Equal(t, "", response.String())
+		require.Errorf(t, err, "Database query failed")
+		assert.Equal(t, "", err.Error())
 	})
 
 }
