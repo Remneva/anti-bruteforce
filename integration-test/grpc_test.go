@@ -12,7 +12,7 @@ import (
 )
 
 func TestServerGRPC(t *testing.T) {
-	conn, err := grpc.Dial("service:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("antifrod:50051", grpc.WithInsecure())
 	ctx := context.Background()
 	if err != nil {
 		fmt.Println(err)
