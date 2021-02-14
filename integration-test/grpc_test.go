@@ -36,8 +36,8 @@ func TestServerGRPC(t *testing.T) {
 		}
 		require.NoError(t, err)
 		assert.NotNil(t, response)
-		assert.Equal(t, true, response.Result)
-		fmt.Println("result", response.Result)
+		assert.Equal(t, true, response.Result.State)
+		fmt.Println("result", response.Result.State)
 	})
 
 	t.Run("Authorization failed", func(t *testing.T) {
@@ -52,11 +52,11 @@ func TestServerGRPC(t *testing.T) {
 		}
 		require.NoError(t, err)
 		assert.NotNil(t, response)
-		assert.Equal(t, false, response.Result)
+		assert.Equal(t, false, response.Result.State)
 		fmt.Println("result", response.Result)
 	})
 
-	t.Run("Authorization success", func(t *testing.T) {
+	t.Run("Authorization error", func(t *testing.T) {
 		request = &pb.AuthorizationRequest{
 			Authorization: &pb.Authorization{
 				Password: "qwerty",
@@ -67,7 +67,6 @@ func TestServerGRPC(t *testing.T) {
 			fmt.Printf("fail to dial: %v\n", err)
 		}
 		require.Error(t, err)
-		assert.NotNil(t, response)
 		assert.Equal(t, "", response.String())
 	})
 
