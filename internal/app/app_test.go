@@ -13,6 +13,7 @@ import (
 	"github.com/bxcodec/faker/v3"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
+	"go.uber.org/goleak"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -27,6 +28,7 @@ type StoreSuite struct {
 	mockBaseDB *MockBaseStorage
 	mockListDB *MockListStorage
 	ctx        context.Context
+	cancel     context.CancelFunc
 	log        *zap.Logger
 	rdb        *redis.Client
 	app        *App
@@ -186,7 +188,7 @@ func (s *StoreSuite) TestCleanBucket() {
 	s.mockListDB.EXPECT().GetFromBlackList(ip).Return(false, nil).Times(1)
 	s.mockListDB.EXPECT().GetFromWhiteList(ip).Return(false, nil).Times(1)
 
-	err := s.app.CleanBucket(user)
+	err := s.app.CleanBucket(s.ctx, user)
 	s.Require().NoError(err)
 }
 
@@ -255,24 +257,27 @@ func (s *StoreSuite) TestContainsIpWhiteListNegative() {
 }
 
 func (s *StoreSuite) TeardownTest() {
+	goleak.VerifyNone(s.T())
 	s.mockCtl.Finish()
+	s.rdb.Close(s.ctx)
 	s.mr.Close()
+	s.cancel()
 }
 
 func (s *StoreSuite) SetupTest() {
 	s.mockCtl = gomock.NewController(s.T())
 	s.mockBaseDB = NewMockBaseStorage(s.mockCtl)
 	s.mockListDB = NewMockListStorage(s.mockCtl)
-	s.ctx = context.Background()
+	s.ctx, s.cancel = context.WithCancel(context.Background())
 	mr, err := miniredis.Run()
 	if err != nil {
 		log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
-	address := mr.Addr()
 	var z zapcore.Level
 	logg, _ := logger.NewLogger(z, "dev", "/dev/null")
-	rdb := redis.NewClient(logg, 15*time.Millisecond)
-	rdbClient, _ := rdb.RdbConnect(s.ctx, address, "")
+	rdb := redis.NewClient(logg, 2*time.Millisecond)
+	rdbClient, _ := rdb.RdbConnect(s.ctx, mr.Addr(), "")
+	s.mr = mr
 	s.rdb = rdbClient
 	s.app = &App{
 		loginLimit:    2,

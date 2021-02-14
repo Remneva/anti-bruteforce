@@ -9,12 +9,16 @@ import (
 	"go.uber.org/zap"
 )
 
-var ctx = context.Background()
-
 type Client struct {
 	rdb    *redis.Client
 	l      *zap.Logger
 	expiry time.Duration
+}
+
+type InterfaceRedis interface {
+	RdbConnect(ctx context.Context, address string, password string) (*Client, error)
+	GettingCount(ctx context.Context, key string) (int64, error)
+	CleanByKey(ctx context.Context, key string) error
 }
 
 func NewClient(l *zap.Logger, expiry time.Duration) *Client {
@@ -40,7 +44,15 @@ func (c *Client) RdbConnect(ctx context.Context, address string, password string
 	return c, nil
 }
 
-func (c *Client) GettingCount(key string) (int64, error) {
+func (c *Client) Close(ctx context.Context) error {
+	err := c.Close(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) GettingCount(ctx context.Context, key string) (int64, error) {
 	// count++
 	incr := c.rdb.Incr(ctx, key)
 	// count-- after timeout
@@ -52,7 +64,7 @@ func (c *Client) GettingCount(key string) (int64, error) {
 		return 0, fmt.Errorf("getting increment error: %w", err)
 	}
 	// устанавливаем срок действия бакета, чтобы невостребованные ключи не накапливались
-	if err = c.setTimeoutForKey(key); err != nil {
+	if err = c.setTimeoutForKey(ctx, key); err != nil {
 		c.l.Error("TTL setting error", zap.String("key", key))
 		return 0, fmt.Errorf("TTL setting error: %w", err)
 	}
@@ -67,7 +79,7 @@ func (c *Client) decrement(ctx context.Context, key string) {
 	c.l.Info("decrement", zap.String("key", key), zap.Int64("currently count", count))
 }
 
-func (c *Client) setTimeoutForKey(key string) error {
+func (c *Client) setTimeoutForKey(ctx context.Context, key string) error {
 	// проверяем наличие ключа в базе
 	alreadyExist, err := c.rdb.Get(ctx, key).Result()
 	if err != nil {
@@ -86,7 +98,7 @@ func (c *Client) setTimeoutForKey(key string) error {
 	return nil
 }
 
-func (c *Client) CleanByKey(key string) error {
+func (c *Client) CleanByKey(ctx context.Context, key string) error {
 	_, err := c.rdb.Del(ctx, key).Result()
 	if err != nil {
 		return fmt.Errorf("delete by key error: %w", err)

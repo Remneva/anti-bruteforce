@@ -49,6 +49,10 @@ func customLevelEncoder(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder) 
 func mkFile(path string) error {
 	existFile := exists(path)
 	if !existFile {
+		err := os.Mkdir("/tmp/tmpdir", 0755)
+		if err != nil {
+			return fmt.Errorf("mkdir failed: %w", err)
+		}
 		tmpfile, err := safefile.Create(path, 0755)
 		if err != nil {
 			return fmt.Errorf("create tmpfile failed: %w", err)

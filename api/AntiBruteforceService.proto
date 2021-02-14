@@ -6,6 +6,39 @@ option go_package = ".;pb";
 
 message Empty {}
 
+message AddToWhiteListRequest{
+  Ip ip = 1;
+}
+message AddToWhiteListResponse{
+}
+message DeleteFromWhiteListRequest{
+  Ip ip = 1;
+}
+message DeleteFromWhiteListResponse{
+}
+message AddToBlackListRequest{
+  Ip ip = 1;
+}
+message AddToBlackListResponse{
+
+}
+message DeleteFromBlackListRequest{
+  Ip ip = 1;
+}
+message DeleteFromBlackListResponse{
+}
+message AuthorizationRequest{
+  Authorization authorization = 1;
+}
+message AuthorizationResponse{
+  Result result = 1;
+}
+message CleanBucketRequest{
+  User user = 1;
+}
+message CleanBucketResponse{
+}
+
 message Authorization {
   string login = 1;
   string password = 2;
@@ -13,7 +46,7 @@ message Authorization {
 }
 
 message Result{
-  bool result = 1;
+  bool state = 1;
 }
 
 message User{
@@ -27,21 +60,21 @@ message Ip{
 }
 
 service AntiBruteForceService {
-  rpc Auth (Authorization) returns (Result){
+  rpc Auth (AuthorizationRequest) returns (AuthorizationResponse){
   }
 
-  rpc CleanBucket (User) returns (Empty){
+  rpc CleanBucket (CleanBucketRequest) returns (CleanBucketResponse){
   }
 
-  rpc AddToWhiteList(Ip) returns (Empty){
+  rpc AddToWhiteList(AddToWhiteListRequest) returns (AddToWhiteListResponse){
   }
 
-  rpc DeleteFromWhiteList (Ip) returns (Empty){
+  rpc DeleteFromWhiteList (DeleteFromWhiteListRequest) returns (DeleteFromWhiteListResponse){
   }
 
-  rpc AddToBlackList (Ip) returns (Empty){
+  rpc AddToBlackList (AddToBlackListRequest) returns (AddToBlackListResponse){
   }
 
-  rpc DeleteFromBlackList (Ip) returns (Empty){
+  rpc DeleteFromBlackList (DeleteFromBlackListRequest) returns (DeleteFromBlackListResponse){
   }
 }

@@ -1,0 +1,94 @@
+name: Go
+
+on:
+  push:
+    branches: [ hw* ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  GO111MODULE: "on"
+  GOPROXY: "https://proxy.golang.org"
+
+jobs:
+
+  go_get:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - name: go get
+        run: cd /tmp && go get "github.com/${GITHUB_REPOSITORY}/${BRANCH}@${BRANCH}"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Linters
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.33
+          working-directory: ${{env.BRANCH}}
+
+      - name: Makefile
+        run: |
+          make lint
+        working-directory: ${{env.BRANCH}}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: go mod download
+        working-directory: ${{env.BRANCH}}
+
+      - name: Unit tests
+        run: |
+          make test
+          make build
+        working-directory: ${{env.BRANCH}}
+
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: go mod download
+        working-directory: ${{env.BRANCH}}
+
+      - name: Makefile
+        run: |
+          make api-test
+        working-directory: ${{env.BRANCH}}

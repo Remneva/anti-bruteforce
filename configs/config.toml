@@ -1,12 +1,11 @@
 [psql]
-dsn = "host=localhost port=5432 user=mary password=mary dbname=exampledb sslmode=disable"
+dsn = "host=postgres port=5432 user=test password=test dbname=exampledb sslmode=disable"
 [logger]
 level = "INFO"
 path = "/tmp/tmpdir/antifrod.log"
 [port]
-http = ":8082"
-grpc = "localhost:50051"
+grpc = ":50051"
 [redis]
-address = "localhost:6379"
-password = "123456"
+address = "redis:6379"
+password = ""
 expiryperiod = 60 # increment expiry period

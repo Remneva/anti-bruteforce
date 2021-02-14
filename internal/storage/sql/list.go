@@ -16,8 +16,6 @@ func (s *Storage) Lists() storage.ListStorage {
 func (s *Storage) AddToWhiteList(ctx context.Context, ip storage.IP) error {
 	query := `INSERT INTO whitelist (ip, mask)
 VALUES($1, $2)`
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	_, err := s.DB.ExecContext(ctx, query, ip.IP, ip.Mask)
 	if err != nil {
 		return fmt.Errorf("query error %w", err)
@@ -27,8 +25,6 @@ VALUES($1, $2)`
 
 func (s *Storage) DeleteFromWhiteList(ctx context.Context, ip storage.IP) error {
 	query := `DELETE from whitelist WHERE ip = $1`
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	result, err := s.DB.ExecContext(ctx, query, ip.IP)
 	if err != nil {
 		s.l.Error("query error", zap.Error(err))
@@ -41,7 +37,7 @@ func (s *Storage) DeleteFromWhiteList(ctx context.Context, ip storage.IP) error 
 	if rowsAffected > 0 {
 		s.l.Info("ip deleted from white list", zap.String("ip", ip.IP))
 	} else {
-		s.l.Info("ip does not exist in white list", zap.String("ip", ip.IP))
+		return fmt.Errorf("ip does not exist in white list: %s", ip.IP)
 	}
 	return nil
 }
@@ -49,8 +45,6 @@ func (s *Storage) DeleteFromWhiteList(ctx context.Context, ip storage.IP) error 
 func (s *Storage) AddToBlackList(ctx context.Context, ip storage.IP) error {
 	query := `INSERT INTO blacklist (ip, mask)
 VALUES($1, $2)`
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	_, err := s.DB.ExecContext(ctx, query, ip.IP, ip.Mask)
 	if err != nil {
 		return fmt.Errorf("query error %w", err)
@@ -62,8 +56,6 @@ VALUES($1, $2)`
 
 func (s *Storage) DeleteFromBlackList(ctx context.Context, ip storage.IP) error {
 	query := `DELETE from blacklist WHERE ip = $1`
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	result, err := s.DB.ExecContext(ctx, query, ip.IP)
 	if err != nil {
 		return fmt.Errorf("query error %w", err)
@@ -75,15 +67,13 @@ func (s *Storage) DeleteFromBlackList(ctx context.Context, ip storage.IP) error 
 	if rowsAffected > 0 {
 		s.l.Info("ip deleted from black list", zap.String("ip", ip.IP))
 	} else {
-		s.l.Info("ip does not exist in black list", zap.String("ip", ip.IP))
+		return fmt.Errorf("ip does not exist in black list: %s", ip.IP)
 	}
 	return nil
 }
 
 func (s *Storage) GetFromWhiteList(ip storage.IP) (bool, error) {
 	var exists bool
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	row := s.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM whitelist WHERE ip = $1)", ip.IP)
 	if err := row.Scan(&exists); err != nil {
 		return false, fmt.Errorf("error while getting ip from white list %w", err)
@@ -95,8 +85,6 @@ func (s *Storage) GetFromWhiteList(ip storage.IP) (bool, error) {
 
 func (s *Storage) GetFromBlackList(ip storage.IP) (bool, error) {
 	var exists bool
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	row := s.DB.QueryRow("SELECT EXISTS(SELECT * FROM blacklist WHERE ip = $1)", ip.IP)
 	if err := row.Scan(&exists); err != nil {
 		return false, fmt.Errorf("error while getting ip from black list %w", err)
@@ -107,8 +95,6 @@ func (s *Storage) GetFromBlackList(ip storage.IP) (bool, error) {
 }
 
 func (s *Storage) GetAllFromWhiteList(ctx context.Context) ([]string, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	var address storage.Address
 	var list []string
 	rows, err := s.DB.QueryContext(ctx, "SELECT * FROM whitelist")
@@ -124,14 +110,15 @@ func (s *Storage) GetAllFromWhiteList(ctx context.Context) ([]string, error) {
 		); err != nil {
 			return nil, fmt.Errorf("scan error %w", err)
 		}
+		if err := rows.Err(); err != nil {
+			return nil, fmt.Errorf("scan error %w", err)
+		}
 		list = append(list, address.IP)
 	}
 	return list, nil
 }
 
 func (s *Storage) GetAllFromBlackList(ctx context.Context) ([]string, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	var address storage.Address
 	var list []string
 	rows, err := s.DB.QueryContext(ctx, "SELECT * FROM blacklist")
@@ -145,6 +132,9 @@ func (s *Storage) GetAllFromBlackList(ctx context.Context) ([]string, error) {
 			&address.IP,
 			&address.Mask,
 		); err != nil {
+			return nil, fmt.Errorf("scan error %w", err)
+		}
+		if err := rows.Err(); err != nil {
 			return nil, fmt.Errorf("scan error %w", err)
 		}
 		list = append(list, address.IP)

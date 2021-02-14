@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Remneva/anti-bruteforce/app"
 	"github.com/Remneva/anti-bruteforce/configs"
+	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/cli"
 	"github.com/Remneva/anti-bruteforce/internal/logger"
 	"github.com/Remneva/anti-bruteforce/internal/redis"
@@ -42,7 +42,7 @@ func main() {
 	redisClient := redis.NewClient(logg, config.Redis.ExpiryPeriod)
 	redisClient, err = redisClient.RdbConnect(ctx, config.Redis.Address, config.Redis.Password)
 	if err != nil {
-		logg.Error("failed to get redis connection")
+		logg.Error(err.Error())
 	}
 	storage := sql.NewDB(logg)
 	if err := storage.Connect(ctx, config.PSQL.DSN, logg); err != nil {
@@ -50,21 +50,29 @@ func main() {
 	}
 	defer storage.Close()
 
-	application := app.NewApp(ctx, storage, config, redisClient, logg)
+	application, err := app.NewApp(ctx, storage, config, redisClient, logg)
+	if err != nil {
+		logg.Fatal("getting configuration error")
+	}
 	grpc, _ := grpc2.NewServer(application, logg, config.Port.Grpc)
 	client := cli.New(application)
-	go signalChan(grpc, client)
-	go client.RunCli()
+	go signalChan(ctx, grpc, client)
+	//	go client.RunCli()
+	logg.Info("cli client is running")
 	if err := grpc.Start(); err != nil {
 		logg.Fatal("failed to start grpc")
 	}
 }
-func signalChan(srv ...server.Stopper) {
-	signals := make(chan os.Signal, 1)
+func signalChan(ctx context.Context, srv ...server.Stopper) {
+	signals := make(chan os.Signal)
 	signal.Notify(signals, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	fmt.Printf("Got %v...\n", <-signals) //nolint:forbidigo
-
-	for _, s := range srv {
-		s.Stop()
+	select {
+	case <-signals:
+		for _, s := range srv {
+			s.Stop()
+		}
+		signal.Stop(signals)
+	case <-ctx.Done():
 	}
 }

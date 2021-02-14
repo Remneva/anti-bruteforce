@@ -3,12 +3,14 @@ package grpc
 import (
 	"context"
 	"fmt"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"net"
 
-	"github.com/Remneva/anti-bruteforce/app"
+	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/server"
 	"github.com/Remneva/anti-bruteforce/internal/server/pb"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
+	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -25,6 +27,13 @@ type Server struct {
 	app    *app.App
 }
 
+func LogRequest(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (response interface{}, err error) {
+
+	fmt.Printf("Request for : %s\n", info.FullMethod)
+	// Last but super important, execute the handler so that the actualy gRPC request is also performed
+	return handler(ctx, req)
+}
+
 func NewServer(app *app.App, l *zap.Logger, address string) (*Server, error) {
 	l.Info("grpc is running...")
 	lsn, err := net.Listen("tcp", address)
@@ -32,7 +41,14 @@ func NewServer(app *app.App, l *zap.Logger, address string) (*Server, error) {
 		l.Error("Listening Error", zap.Error(err))
 		return &Server{}, fmt.Errorf("database query failed: %w", err)
 	}
-	server := grpc.NewServer()
+	server := grpc.NewServer(
+		grpc.StreamInterceptor(
+			grpc_middleware.ChainStreamServer(
+				grpc_zap.StreamServerInterceptor(l))),
+		grpc.UnaryInterceptor(
+			grpc_middleware.ChainUnaryServer(
+				grpc_zap.UnaryServerInterceptor(l))))
+
 	srv := &Server{ //nolint:exhaustivestruct
 		app:    app,
 		server: server,
@@ -57,90 +73,92 @@ func (s *Server) Stop() {
 	s.server.GracefulStop()
 }
 
-func (s *Server) Auth(ctx context.Context, req *pb.Authorization) (*pb.Result, error) {
+func (s *Server) Auth(ctx context.Context, req *pb.AuthorizationRequest) (*pb.AuthorizationResponse, error) {
 	s.l.Info("Auth grpc method")
-	if req.Login == "" || req.Password == "" || req.Ip == "" {
+	if req.Authorization.Login == "" || req.Authorization.Password == "" || req.Authorization.Ip == "" {
 		s.l.Error("login, password, ip can`t be empty")
 		return nil, status.Error(codes.InvalidArgument, "login, password or ip can`t be empty")
 	}
 	var auth storage.Auth
-	auth.IP = req.Ip
-	auth.Login = req.Login
-	auth.Password = req.Password
+	auth.IP = req.Authorization.Ip
+	auth.Login = req.Authorization.Login
+	auth.Password = req.Authorization.Password
 	success, err := s.app.Validate(ctx, auth)
+	r := &pb.Result{State: success}
 	if err != nil {
 		s.l.Error("Validation error", zap.Error(err))
-		return &pb.Result{}, status.Error(codes.Internal, err.Error())
+		return &pb.AuthorizationResponse{Result: r}, status.Error(codes.Internal, err.Error())
 	}
-	return &pb.Result{Result: success}, nil
+
+	return &pb.AuthorizationResponse{Result: r}, nil
 }
 
-func (s *Server) CleanBucket(ctx context.Context, req *pb.User) (*pb.Empty, error) {
+func (s *Server) CleanBucket(ctx context.Context, req *pb.CleanBucketRequest) (*pb.CleanBucketResponse, error) {
 	s.l.Info("clean grpc method")
-	if req.Login == "" || req.Ip == "" {
+	if req.User.Login == "" || req.User.Ip == "" {
 		s.l.Error("login or ip can`t be empty")
 		return nil, status.Error(codes.InvalidArgument, "login or ip can`t be empty")
 	}
 	var us storage.User
-	us.IP = req.Ip
-	us.Login = req.Login
-	if err := s.app.CleanBucket(us); err != nil {
+	us.IP = req.User.Ip
+	us.Login = req.User.Login
+	if err := s.app.CleanBucket(ctx, us); err != nil {
 		s.l.Error("server error", zap.Error(err))
-		return &pb.Empty{}, status.Error(codes.Internal, err.Error())
+		return &pb.CleanBucketResponse{}, status.Error(codes.Internal, err.Error())
 	}
-	return &pb.Empty{}, nil
+	return &pb.CleanBucketResponse{}, nil
 }
 
-func (s *Server) AddToWhiteList(ctx context.Context, req *pb.Ip) (*pb.Empty, error) {
+func (s *Server) AddToWhiteList(ctx context.Context, req *pb.AddToWhiteListRequest) (*pb.AddToWhiteListResponse, error) {
 	s.l.Info("add to white list grpc method")
-	if req.Ip == "" {
+	if req.Ip.Ip == "" {
 		s.l.Error("IP can`t be empty")
 		return nil, status.Error(codes.InvalidArgument, "IP can`t be empty")
 	}
-	ip := parseToStorageIP(req)
+	ip := parseToStorageIP(req.Ip)
 	if err := s.app.AddToWhiteList(ctx, ip); err != nil {
-		return &pb.Empty{}, status.Error(codes.Internal, err.Error())
+		return &pb.AddToWhiteListResponse{}, status.Error(codes.Internal, err.Error())
 	}
-	return &pb.Empty{}, nil
+	return &pb.AddToWhiteListResponse{}, nil
 }
 
-func (s *Server) AddToBlackList(ctx context.Context, req *pb.Ip) (*pb.Empty, error) {
+func (s *Server) AddToBlackList(ctx context.Context, req *pb.AddToBlackListRequest) (*pb.AddToBlackListResponse, error) {
 	s.l.Info("add to black list grpc method")
-	if req.Ip == "" {
+	if req.Ip.Ip == "" {
 		s.l.Error("IP can`t be empty")
 		return nil, status.Error(codes.InvalidArgument, "IP can`t be empty")
 	}
-	ip := parseToStorageIP(req)
+	ip := parseToStorageIP(req.Ip)
 	if err := s.app.AddToBlackList(ctx, ip); err != nil {
-		return &pb.Empty{}, status.Error(codes.Internal, err.Error())
+		return &pb.AddToBlackListResponse{}, status.Error(codes.Internal, err.Error())
 	}
-	return &pb.Empty{}, nil
+	return &pb.AddToBlackListResponse{}, nil
 }
 
-func (s *Server) DeleteFromWhiteList(ctx context.Context, req *pb.Ip) (*pb.Empty, error) {
+func (s *Server) DeleteFromWhiteList(ctx context.Context, req *pb.DeleteFromWhiteListRequest) (*pb.DeleteFromWhiteListResponse, error) {
 	s.l.Info("delete from white list grpc method")
-	if req.Ip == "" {
+	if req.Ip.Ip == "" {
 		s.l.Error("IP can`t be empty")
 		return nil, status.Error(codes.InvalidArgument, "IP can`t be empty")
 	}
-	ip := parseToStorageIP(req)
+	ip := parseToStorageIP(req.Ip)
 	if err := s.app.DeleteFromWhiteList(ctx, ip); err != nil {
-		return &pb.Empty{}, status.Error(codes.Internal, err.Error())
+		return &pb.DeleteFromWhiteListResponse{}, status.Error(codes.Internal, err.Error())
 	}
-	return &pb.Empty{}, nil
+	return &pb.DeleteFromWhiteListResponse{}, nil
 }
 
-func (s *Server) DeleteFromBlackList(ctx context.Context, req *pb.Ip) (*pb.Empty, error) {
+func (s *Server) DeleteFromBlackList(ctx context.Context, req *pb.DeleteFromBlackListRequest) (*pb.DeleteFromBlackListResponse, error) {
 	s.l.Info("delete from black list grpc method")
-	if req.Ip == "" {
+	if req.Ip.Ip == "" {
 		s.l.Error("IP can`t be empty")
 		return nil, status.Error(codes.InvalidArgument, "IP can`t be empty")
 	}
-	ip := parseToStorageIP(req)
+	ip := parseToStorageIP(req.Ip)
 	if err := s.app.DeleteFromBlackList(ctx, ip); err != nil {
-		return &pb.Empty{}, status.Error(codes.Internal, err.Error())
+		return &pb.DeleteFromBlackListResponse{}, status.Error(codes.Internal, err.Error())
 	}
-	return &pb.Empty{}, nil
+	return &pb.DeleteFromBlackListResponse{}, nil
 }
 
 func parseToStorageIP(req *pb.Ip) storage.IP {

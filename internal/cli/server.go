@@ -9,7 +9,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/Remneva/anti-bruteforce/app"
+	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/cli/pb"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
 	"github.com/mitchellh/cli"
@@ -45,8 +45,9 @@ func (s *Servercli) RunCli() {
 	}
 
 	if len(c.Args) == 0 {
-		listener, err := net.Listen("tcp", "127.0.0.1:1234")
+		listener, err := net.Listen("tcp", "antifrod:1234")
 		if err != nil {
+			fmt.Println(err)
 			log.Fatalf("failed to listen: %v", err)
 		}
 		grpcServer := grpc.NewServer()
@@ -74,7 +75,7 @@ func (g *grpcCommands) Clean(ctx context.Context, arg *pb.Arg) (*pb.Output, erro
 	var us storage.User
 	us.Login = arg.Args[0]
 	us.IP = arg.Args[1]
-	if err = g.cli.app.CleanBucket(us); err != nil {
+	if err = g.cli.app.CleanBucket(ctx, us); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
 	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil

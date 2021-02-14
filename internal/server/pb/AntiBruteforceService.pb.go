@@ -7,12 +7,11 @@
 package pb
 
 import (
-	reflect "reflect"
-	sync "sync"
-
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -64,6 +63,525 @@ func (*Empty) Descriptor() ([]byte, []int) {
 	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{0}
 }
 
+type AddToWhiteListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ip *Ip `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
+}
+
+func (x *AddToWhiteListRequest) Reset() {
+	*x = AddToWhiteListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddToWhiteListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddToWhiteListRequest) ProtoMessage() {}
+
+func (x *AddToWhiteListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddToWhiteListRequest.ProtoReflect.Descriptor instead.
+func (*AddToWhiteListRequest) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *AddToWhiteListRequest) GetIp() *Ip {
+	if x != nil {
+		return x.Ip
+	}
+	return nil
+}
+
+type AddToWhiteListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *AddToWhiteListResponse) Reset() {
+	*x = AddToWhiteListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddToWhiteListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddToWhiteListResponse) ProtoMessage() {}
+
+func (x *AddToWhiteListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddToWhiteListResponse.ProtoReflect.Descriptor instead.
+func (*AddToWhiteListResponse) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{2}
+}
+
+type DeleteFromWhiteListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ip *Ip `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
+}
+
+func (x *DeleteFromWhiteListRequest) Reset() {
+	*x = DeleteFromWhiteListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFromWhiteListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFromWhiteListRequest) ProtoMessage() {}
+
+func (x *DeleteFromWhiteListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFromWhiteListRequest.ProtoReflect.Descriptor instead.
+func (*DeleteFromWhiteListRequest) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DeleteFromWhiteListRequest) GetIp() *Ip {
+	if x != nil {
+		return x.Ip
+	}
+	return nil
+}
+
+type DeleteFromWhiteListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteFromWhiteListResponse) Reset() {
+	*x = DeleteFromWhiteListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFromWhiteListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFromWhiteListResponse) ProtoMessage() {}
+
+func (x *DeleteFromWhiteListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFromWhiteListResponse.ProtoReflect.Descriptor instead.
+func (*DeleteFromWhiteListResponse) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{4}
+}
+
+type AddToBlackListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ip *Ip `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
+}
+
+func (x *AddToBlackListRequest) Reset() {
+	*x = AddToBlackListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddToBlackListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddToBlackListRequest) ProtoMessage() {}
+
+func (x *AddToBlackListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddToBlackListRequest.ProtoReflect.Descriptor instead.
+func (*AddToBlackListRequest) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AddToBlackListRequest) GetIp() *Ip {
+	if x != nil {
+		return x.Ip
+	}
+	return nil
+}
+
+type AddToBlackListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *AddToBlackListResponse) Reset() {
+	*x = AddToBlackListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddToBlackListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddToBlackListResponse) ProtoMessage() {}
+
+func (x *AddToBlackListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddToBlackListResponse.ProtoReflect.Descriptor instead.
+func (*AddToBlackListResponse) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{6}
+}
+
+type DeleteFromBlackListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ip *Ip `protobuf:"bytes,1,opt,name=ip,proto3" json:"ip,omitempty"`
+}
+
+func (x *DeleteFromBlackListRequest) Reset() {
+	*x = DeleteFromBlackListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFromBlackListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFromBlackListRequest) ProtoMessage() {}
+
+func (x *DeleteFromBlackListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFromBlackListRequest.ProtoReflect.Descriptor instead.
+func (*DeleteFromBlackListRequest) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeleteFromBlackListRequest) GetIp() *Ip {
+	if x != nil {
+		return x.Ip
+	}
+	return nil
+}
+
+type DeleteFromBlackListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteFromBlackListResponse) Reset() {
+	*x = DeleteFromBlackListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFromBlackListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFromBlackListResponse) ProtoMessage() {}
+
+func (x *DeleteFromBlackListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFromBlackListResponse.ProtoReflect.Descriptor instead.
+func (*DeleteFromBlackListResponse) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{8}
+}
+
+type AuthorizationRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Authorization *Authorization `protobuf:"bytes,1,opt,name=authorization,proto3" json:"authorization,omitempty"`
+}
+
+func (x *AuthorizationRequest) Reset() {
+	*x = AuthorizationRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AuthorizationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthorizationRequest) ProtoMessage() {}
+
+func (x *AuthorizationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthorizationRequest.ProtoReflect.Descriptor instead.
+func (*AuthorizationRequest) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *AuthorizationRequest) GetAuthorization() *Authorization {
+	if x != nil {
+		return x.Authorization
+	}
+	return nil
+}
+
+type AuthorizationResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Result *Result `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+}
+
+func (x *AuthorizationResponse) Reset() {
+	*x = AuthorizationResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AuthorizationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthorizationResponse) ProtoMessage() {}
+
+func (x *AuthorizationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthorizationResponse.ProtoReflect.Descriptor instead.
+func (*AuthorizationResponse) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *AuthorizationResponse) GetResult() *Result {
+	if x != nil {
+		return x.Result
+	}
+	return nil
+}
+
+type CleanBucketRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	User *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+}
+
+func (x *CleanBucketRequest) Reset() {
+	*x = CleanBucketRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CleanBucketRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CleanBucketRequest) ProtoMessage() {}
+
+func (x *CleanBucketRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CleanBucketRequest.ProtoReflect.Descriptor instead.
+func (*CleanBucketRequest) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CleanBucketRequest) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+type CleanBucketResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CleanBucketResponse) Reset() {
+	*x = CleanBucketResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CleanBucketResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CleanBucketResponse) ProtoMessage() {}
+
+func (x *CleanBucketResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CleanBucketResponse.ProtoReflect.Descriptor instead.
+func (*CleanBucketResponse) Descriptor() ([]byte, []int) {
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{12}
+}
+
 type Authorization struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -77,7 +595,7 @@ type Authorization struct {
 func (x *Authorization) Reset() {
 	*x = Authorization{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_AntiBruteforceService_proto_msgTypes[1]
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -90,7 +608,7 @@ func (x *Authorization) String() string {
 func (*Authorization) ProtoMessage() {}
 
 func (x *Authorization) ProtoReflect() protoreflect.Message {
-	mi := &file_api_AntiBruteforceService_proto_msgTypes[1]
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -103,7 +621,7 @@ func (x *Authorization) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Authorization.ProtoReflect.Descriptor instead.
 func (*Authorization) Descriptor() ([]byte, []int) {
-	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{1}
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Authorization) GetLogin() string {
@@ -132,13 +650,13 @@ type Result struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Result bool `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
+	State bool `protobuf:"varint,1,opt,name=state,proto3" json:"state,omitempty"`
 }
 
 func (x *Result) Reset() {
 	*x = Result{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_AntiBruteforceService_proto_msgTypes[2]
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -151,7 +669,7 @@ func (x *Result) String() string {
 func (*Result) ProtoMessage() {}
 
 func (x *Result) ProtoReflect() protoreflect.Message {
-	mi := &file_api_AntiBruteforceService_proto_msgTypes[2]
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -164,12 +682,12 @@ func (x *Result) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Result.ProtoReflect.Descriptor instead.
 func (*Result) Descriptor() ([]byte, []int) {
-	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{2}
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *Result) GetResult() bool {
+func (x *Result) GetState() bool {
 	if x != nil {
-		return x.Result
+		return x.State
 	}
 	return false
 }
@@ -186,7 +704,7 @@ type User struct {
 func (x *User) Reset() {
 	*x = User{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_AntiBruteforceService_proto_msgTypes[3]
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -199,7 +717,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_api_AntiBruteforceService_proto_msgTypes[3]
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -212,7 +730,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{3}
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *User) GetLogin() string {
@@ -241,7 +759,7 @@ type Ip struct {
 func (x *Ip) Reset() {
 	*x = Ip{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_AntiBruteforceService_proto_msgTypes[4]
+		mi := &file_api_AntiBruteforceService_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -254,7 +772,7 @@ func (x *Ip) String() string {
 func (*Ip) ProtoMessage() {}
 
 func (x *Ip) ProtoReflect() protoreflect.Message {
-	mi := &file_api_AntiBruteforceService_proto_msgTypes[4]
+	mi := &file_api_AntiBruteforceService_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -265,9 +783,9 @@ func (x *Ip) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use IP.ProtoReflect.Descriptor instead.
+// Deprecated: Use Ip.ProtoReflect.Descriptor instead.
 func (*Ip) Descriptor() ([]byte, []int) {
-	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{4}
+	return file_api_AntiBruteforceService_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *Ip) GetIp() string {
@@ -290,47 +808,99 @@ var file_api_AntiBruteforceService_proto_rawDesc = []byte{
 	0x0a, 0x1f, 0x61, 0x70, 0x69, 0x2f, 0x41, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x66,
 	0x6f, 0x72, 0x63, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x12, 0x0e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63,
-	0x65, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x51, 0x0a, 0x0d, 0x41, 0x75,
-	0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x6c,
-	0x6f, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x6f, 0x67, 0x69,
-	0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x70, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x20, 0x0a,
-	0x06, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c,
-	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22,
-	0x2c, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x6f, 0x67, 0x69, 0x6e,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x70, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x28, 0x0a,
-	0x02, 0x49, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x02, 0x69, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x6d, 0x61, 0x73, 0x6b, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x6d, 0x61, 0x73, 0x6b, 0x32, 0x9c, 0x03, 0x0a, 0x15, 0x41, 0x6e, 0x74, 0x69,
-	0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x12, 0x3f, 0x0a, 0x04, 0x41, 0x75, 0x74, 0x68, 0x12, 0x1d, 0x2e, 0x61, 0x6e, 0x74, 0x69,
+	0x65, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x3b, 0x0a, 0x15, 0x41, 0x64,
+	0x64, 0x54, 0x6f, 0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65,
+	0x2e, 0x49, 0x70, 0x52, 0x02, 0x69, 0x70, 0x22, 0x18, 0x0a, 0x16, 0x41, 0x64, 0x64, 0x54, 0x6f,
+	0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x40, 0x0a, 0x1a, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x57,
+	0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x22, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x61, 0x6e,
+	0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x52,
+	0x02, 0x69, 0x70, 0x22, 0x1d, 0x0a, 0x1b, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f,
+	0x6d, 0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x3b, 0x0a, 0x15, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x42, 0x6c, 0x61, 0x63, 0x6b,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x02, 0x69,
+	0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72,
+	0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x52, 0x02, 0x69, 0x70, 0x22,
+	0x18, 0x0a, 0x16, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x40, 0x0a, 0x1a, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46,
+	0x6f, 0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x52, 0x02, 0x69, 0x70, 0x22, 0x1d, 0x0a, 0x1b, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69,
+	0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x5b, 0x0a, 0x14, 0x41, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x43, 0x0a, 0x0d, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x61, 0x6e, 0x74, 0x69,
 	0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f,
-	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x16, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42,
-	0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74,
-	0x22, 0x00, 0x12, 0x3c, 0x0a, 0x0b, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x42, 0x75, 0x63, 0x6b, 0x65,
-	0x74, 0x12, 0x14, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72,
-	0x63, 0x65, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x1a, 0x15, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72,
-	0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00,
-	0x12, 0x3d, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69,
-	0x73, 0x74, 0x12, 0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f,
-	0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x1a, 0x15, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75,
-	0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12,
-	0x42, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x57, 0x68, 0x69,
-	0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75,
-	0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x1a, 0x15, 0x2e, 0x61, 0x6e, 0x74,
-	0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74,
-	0x79, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x42, 0x6c, 0x61, 0x63,
-	0x6b, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74,
-	0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x1a, 0x15, 0x2e, 0x61, 0x6e, 0x74, 0x69,
-	0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x22, 0x00, 0x12, 0x42, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d,
-	0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x12, 0x2e, 0x61, 0x6e, 0x74, 0x69,
-	0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x49, 0x70, 0x1a, 0x15, 0x2e,
-	0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x45,
-	0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x3b, 0x70, 0x62, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0d, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
+	0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x47, 0x0a, 0x15, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x2e, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x16, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63,
+	0x65, 0x2e, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74,
+	0x22, 0x3e, 0x0a, 0x12, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x42, 0x75, 0x63, 0x6b, 0x65, 0x74, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65,
+	0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72,
+	0x22, 0x15, 0x0a, 0x13, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x42, 0x75, 0x63, 0x6b, 0x65, 0x74, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x51, 0x0a, 0x0d, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x6f, 0x67, 0x69,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x1a,
+	0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x1e, 0x0a, 0x06, 0x52, 0x65,
+	0x73, 0x75, 0x6c, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x22, 0x2c, 0x0a, 0x04, 0x55, 0x73,
+	0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x70, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x22, 0x28, 0x0a, 0x02, 0x49, 0x70, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x70, 0x12, 0x12,
+	0x0a, 0x04, 0x6d, 0x61, 0x73, 0x6b, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6d, 0x61,
+	0x73, 0x6b, 0x32, 0xf2, 0x04, 0x0a, 0x15, 0x41, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65,
+	0x46, 0x6f, 0x72, 0x63, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x55, 0x0a, 0x04,
+	0x41, 0x75, 0x74, 0x68, 0x12, 0x24, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65,
+	0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x61, 0x6e, 0x74,
+	0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x41, 0x75, 0x74, 0x68,
+	0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x58, 0x0a, 0x0b, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x42, 0x75, 0x63, 0x6b,
+	0x65, 0x74, 0x12, 0x22, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f,
+	0x72, 0x63, 0x65, 0x2e, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x42, 0x75, 0x63, 0x6b, 0x65, 0x74, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75,
+	0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x42, 0x75, 0x63,
+	0x6b, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x61, 0x0a,
+	0x0e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12,
+	0x25, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65,
+	0x2e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75,
+	0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x57, 0x68, 0x69,
+	0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x70, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x57, 0x68,
+	0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x2a, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72,
+	0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46,
+	0x72, 0x6f, 0x6d, 0x57, 0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46,
+	0x6f, 0x72, 0x63, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x57,
+	0x68, 0x69, 0x74, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x61, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x42, 0x6c, 0x61, 0x63, 0x6b,
+	0x4c, 0x69, 0x73, 0x74, 0x12, 0x25, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65,
+	0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x41, 0x64, 0x64, 0x54, 0x6f, 0x42, 0x6c, 0x61, 0x63, 0x6b,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x61, 0x6e,
+	0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x41, 0x64, 0x64,
+	0x54, 0x6f, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x70, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46,
+	0x72, 0x6f, 0x6d, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x2a, 0x2e, 0x61,
+	0x6e, 0x74, 0x69, 0x42, 0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x46, 0x72, 0x6f, 0x6d, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73,
+	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x61, 0x6e, 0x74, 0x69, 0x42,
+	0x72, 0x75, 0x74, 0x65, 0x46, 0x6f, 0x72, 0x63, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x46, 0x72, 0x6f, 0x6d, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x3b, 0x70, 0x62, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -345,32 +915,51 @@ func file_api_AntiBruteforceService_proto_rawDescGZIP() []byte {
 	return file_api_AntiBruteforceService_proto_rawDescData
 }
 
-var file_api_AntiBruteforceService_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_api_AntiBruteforceService_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_api_AntiBruteforceService_proto_goTypes = []interface{}{
-	(*Empty)(nil),         // 0: antiBruteForce.Empty
-	(*Authorization)(nil), // 1: antiBruteForce.Authorization
-	(*Result)(nil),        // 2: antiBruteForce.Result
-	(*User)(nil),          // 3: antiBruteForce.User
-	(*Ip)(nil),            // 4: antiBruteForce.IP
+	(*Empty)(nil),                       // 0: antiBruteForce.Empty
+	(*AddToWhiteListRequest)(nil),       // 1: antiBruteForce.AddToWhiteListRequest
+	(*AddToWhiteListResponse)(nil),      // 2: antiBruteForce.AddToWhiteListResponse
+	(*DeleteFromWhiteListRequest)(nil),  // 3: antiBruteForce.DeleteFromWhiteListRequest
+	(*DeleteFromWhiteListResponse)(nil), // 4: antiBruteForce.DeleteFromWhiteListResponse
+	(*AddToBlackListRequest)(nil),       // 5: antiBruteForce.AddToBlackListRequest
+	(*AddToBlackListResponse)(nil),      // 6: antiBruteForce.AddToBlackListResponse
+	(*DeleteFromBlackListRequest)(nil),  // 7: antiBruteForce.DeleteFromBlackListRequest
+	(*DeleteFromBlackListResponse)(nil), // 8: antiBruteForce.DeleteFromBlackListResponse
+	(*AuthorizationRequest)(nil),        // 9: antiBruteForce.AuthorizationRequest
+	(*AuthorizationResponse)(nil),       // 10: antiBruteForce.AuthorizationResponse
+	(*CleanBucketRequest)(nil),          // 11: antiBruteForce.CleanBucketRequest
+	(*CleanBucketResponse)(nil),         // 12: antiBruteForce.CleanBucketResponse
+	(*Authorization)(nil),               // 13: antiBruteForce.Authorization
+	(*Result)(nil),                      // 14: antiBruteForce.Result
+	(*User)(nil),                        // 15: antiBruteForce.User
+	(*Ip)(nil),                          // 16: antiBruteForce.Ip
 }
 var file_api_AntiBruteforceService_proto_depIdxs = []int32{
-	1, // 0: antiBruteForce.AntiBruteForceService.Auth:input_type -> antiBruteForce.Authorization
-	3, // 1: antiBruteForce.AntiBruteForceService.CleanBucket:input_type -> antiBruteForce.User
-	4, // 2: antiBruteForce.AntiBruteForceService.AddToWhiteList:input_type -> antiBruteForce.IP
-	4, // 3: antiBruteForce.AntiBruteForceService.DeleteFromWhiteList:input_type -> antiBruteForce.IP
-	4, // 4: antiBruteForce.AntiBruteForceService.AddToBlackList:input_type -> antiBruteForce.IP
-	4, // 5: antiBruteForce.AntiBruteForceService.DeleteFromBlackList:input_type -> antiBruteForce.IP
-	2, // 6: antiBruteForce.AntiBruteForceService.Auth:output_type -> antiBruteForce.Result
-	0, // 7: antiBruteForce.AntiBruteForceService.CleanBucket:output_type -> antiBruteForce.Empty
-	0, // 8: antiBruteForce.AntiBruteForceService.AddToWhiteList:output_type -> antiBruteForce.Empty
-	0, // 9: antiBruteForce.AntiBruteForceService.DeleteFromWhiteList:output_type -> antiBruteForce.Empty
-	0, // 10: antiBruteForce.AntiBruteForceService.AddToBlackList:output_type -> antiBruteForce.Empty
-	0, // 11: antiBruteForce.AntiBruteForceService.DeleteFromBlackList:output_type -> antiBruteForce.Empty
-	6, // [6:12] is the sub-list for method output_type
-	0, // [0:6] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	16, // 0: antiBruteForce.AddToWhiteListRequest.ip:type_name -> antiBruteForce.Ip
+	16, // 1: antiBruteForce.DeleteFromWhiteListRequest.ip:type_name -> antiBruteForce.Ip
+	16, // 2: antiBruteForce.AddToBlackListRequest.ip:type_name -> antiBruteForce.Ip
+	16, // 3: antiBruteForce.DeleteFromBlackListRequest.ip:type_name -> antiBruteForce.Ip
+	13, // 4: antiBruteForce.AuthorizationRequest.authorization:type_name -> antiBruteForce.Authorization
+	14, // 5: antiBruteForce.AuthorizationResponse.result:type_name -> antiBruteForce.Result
+	15, // 6: antiBruteForce.CleanBucketRequest.user:type_name -> antiBruteForce.User
+	9,  // 7: antiBruteForce.AntiBruteForceService.Auth:input_type -> antiBruteForce.AuthorizationRequest
+	11, // 8: antiBruteForce.AntiBruteForceService.CleanBucket:input_type -> antiBruteForce.CleanBucketRequest
+	1,  // 9: antiBruteForce.AntiBruteForceService.AddToWhiteList:input_type -> antiBruteForce.AddToWhiteListRequest
+	3,  // 10: antiBruteForce.AntiBruteForceService.DeleteFromWhiteList:input_type -> antiBruteForce.DeleteFromWhiteListRequest
+	5,  // 11: antiBruteForce.AntiBruteForceService.AddToBlackList:input_type -> antiBruteForce.AddToBlackListRequest
+	7,  // 12: antiBruteForce.AntiBruteForceService.DeleteFromBlackList:input_type -> antiBruteForce.DeleteFromBlackListRequest
+	10, // 13: antiBruteForce.AntiBruteForceService.Auth:output_type -> antiBruteForce.AuthorizationResponse
+	12, // 14: antiBruteForce.AntiBruteForceService.CleanBucket:output_type -> antiBruteForce.CleanBucketResponse
+	2,  // 15: antiBruteForce.AntiBruteForceService.AddToWhiteList:output_type -> antiBruteForce.AddToWhiteListResponse
+	4,  // 16: antiBruteForce.AntiBruteForceService.DeleteFromWhiteList:output_type -> antiBruteForce.DeleteFromWhiteListResponse
+	6,  // 17: antiBruteForce.AntiBruteForceService.AddToBlackList:output_type -> antiBruteForce.AddToBlackListResponse
+	8,  // 18: antiBruteForce.AntiBruteForceService.DeleteFromBlackList:output_type -> antiBruteForce.DeleteFromBlackListResponse
+	13, // [13:19] is the sub-list for method output_type
+	7,  // [7:13] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_api_AntiBruteforceService_proto_init() }
@@ -392,7 +981,7 @@ func file_api_AntiBruteforceService_proto_init() {
 			}
 		}
 		file_api_AntiBruteforceService_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Authorization); i {
+			switch v := v.(*AddToWhiteListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -404,7 +993,7 @@ func file_api_AntiBruteforceService_proto_init() {
 			}
 		}
 		file_api_AntiBruteforceService_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Result); i {
+			switch v := v.(*AddToWhiteListResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -416,7 +1005,7 @@ func file_api_AntiBruteforceService_proto_init() {
 			}
 		}
 		file_api_AntiBruteforceService_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*User); i {
+			switch v := v.(*DeleteFromWhiteListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -428,6 +1017,150 @@ func file_api_AntiBruteforceService_proto_init() {
 			}
 		}
 		file_api_AntiBruteforceService_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFromWhiteListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddToBlackListRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddToBlackListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFromBlackListRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFromBlackListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AuthorizationRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AuthorizationResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CleanBucketRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CleanBucketResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Authorization); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Result); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*User); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_AntiBruteforceService_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Ip); i {
 			case 0:
 				return &v.state
@@ -446,7 +1179,7 @@ func file_api_AntiBruteforceService_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_AntiBruteforceService_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

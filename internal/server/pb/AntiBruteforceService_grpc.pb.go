@@ -4,7 +4,6 @@ package pb
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,12 +18,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AntiBruteForceServiceClient interface {
-	Auth(ctx context.Context, in *Authorization, opts ...grpc.CallOption) (*Result, error)
-	CleanBucket(ctx context.Context, in *User, opts ...grpc.CallOption) (*Empty, error)
-	AddToWhiteList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error)
-	DeleteFromWhiteList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error)
-	AddToBlackList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error)
-	DeleteFromBlackList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error)
+	Auth(ctx context.Context, in *AuthorizationRequest, opts ...grpc.CallOption) (*AuthorizationResponse, error)
+	CleanBucket(ctx context.Context, in *CleanBucketRequest, opts ...grpc.CallOption) (*CleanBucketResponse, error)
+	AddToWhiteList(ctx context.Context, in *AddToWhiteListRequest, opts ...grpc.CallOption) (*AddToWhiteListResponse, error)
+	DeleteFromWhiteList(ctx context.Context, in *DeleteFromWhiteListRequest, opts ...grpc.CallOption) (*DeleteFromWhiteListResponse, error)
+	AddToBlackList(ctx context.Context, in *AddToBlackListRequest, opts ...grpc.CallOption) (*AddToBlackListResponse, error)
+	DeleteFromBlackList(ctx context.Context, in *DeleteFromBlackListRequest, opts ...grpc.CallOption) (*DeleteFromBlackListResponse, error)
 }
 
 type antiBruteForceServiceClient struct {
@@ -35,8 +34,8 @@ func NewAntiBruteForceServiceClient(cc grpc.ClientConnInterface) AntiBruteForceS
 	return &antiBruteForceServiceClient{cc}
 }
 
-func (c *antiBruteForceServiceClient) Auth(ctx context.Context, in *Authorization, opts ...grpc.CallOption) (*Result, error) {
-	out := new(Result)
+func (c *antiBruteForceServiceClient) Auth(ctx context.Context, in *AuthorizationRequest, opts ...grpc.CallOption) (*AuthorizationResponse, error) {
+	out := new(AuthorizationResponse)
 	err := c.cc.Invoke(ctx, "/antiBruteForce.AntiBruteForceService/Auth", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -44,8 +43,8 @@ func (c *antiBruteForceServiceClient) Auth(ctx context.Context, in *Authorizatio
 	return out, nil
 }
 
-func (c *antiBruteForceServiceClient) CleanBucket(ctx context.Context, in *User, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *antiBruteForceServiceClient) CleanBucket(ctx context.Context, in *CleanBucketRequest, opts ...grpc.CallOption) (*CleanBucketResponse, error) {
+	out := new(CleanBucketResponse)
 	err := c.cc.Invoke(ctx, "/antiBruteForce.AntiBruteForceService/CleanBucket", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +52,8 @@ func (c *antiBruteForceServiceClient) CleanBucket(ctx context.Context, in *User,
 	return out, nil
 }
 
-func (c *antiBruteForceServiceClient) AddToWhiteList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *antiBruteForceServiceClient) AddToWhiteList(ctx context.Context, in *AddToWhiteListRequest, opts ...grpc.CallOption) (*AddToWhiteListResponse, error) {
+	out := new(AddToWhiteListResponse)
 	err := c.cc.Invoke(ctx, "/antiBruteForce.AntiBruteForceService/AddToWhiteList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,8 +61,8 @@ func (c *antiBruteForceServiceClient) AddToWhiteList(ctx context.Context, in *Ip
 	return out, nil
 }
 
-func (c *antiBruteForceServiceClient) DeleteFromWhiteList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *antiBruteForceServiceClient) DeleteFromWhiteList(ctx context.Context, in *DeleteFromWhiteListRequest, opts ...grpc.CallOption) (*DeleteFromWhiteListResponse, error) {
+	out := new(DeleteFromWhiteListResponse)
 	err := c.cc.Invoke(ctx, "/antiBruteForce.AntiBruteForceService/DeleteFromWhiteList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -71,8 +70,8 @@ func (c *antiBruteForceServiceClient) DeleteFromWhiteList(ctx context.Context, i
 	return out, nil
 }
 
-func (c *antiBruteForceServiceClient) AddToBlackList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *antiBruteForceServiceClient) AddToBlackList(ctx context.Context, in *AddToBlackListRequest, opts ...grpc.CallOption) (*AddToBlackListResponse, error) {
+	out := new(AddToBlackListResponse)
 	err := c.cc.Invoke(ctx, "/antiBruteForce.AntiBruteForceService/AddToBlackList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -80,8 +79,8 @@ func (c *antiBruteForceServiceClient) AddToBlackList(ctx context.Context, in *Ip
 	return out, nil
 }
 
-func (c *antiBruteForceServiceClient) DeleteFromBlackList(ctx context.Context, in *Ip, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *antiBruteForceServiceClient) DeleteFromBlackList(ctx context.Context, in *DeleteFromBlackListRequest, opts ...grpc.CallOption) (*DeleteFromBlackListResponse, error) {
+	out := new(DeleteFromBlackListResponse)
 	err := c.cc.Invoke(ctx, "/antiBruteForce.AntiBruteForceService/DeleteFromBlackList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -93,12 +92,12 @@ func (c *antiBruteForceServiceClient) DeleteFromBlackList(ctx context.Context, i
 // All implementations must embed UnimplementedAntiBruteForceServiceServer
 // for forward compatibility
 type AntiBruteForceServiceServer interface {
-	Auth(context.Context, *Authorization) (*Result, error)
-	CleanBucket(context.Context, *User) (*Empty, error)
-	AddToWhiteList(context.Context, *Ip) (*Empty, error)
-	DeleteFromWhiteList(context.Context, *Ip) (*Empty, error)
-	AddToBlackList(context.Context, *Ip) (*Empty, error)
-	DeleteFromBlackList(context.Context, *Ip) (*Empty, error)
+	Auth(context.Context, *AuthorizationRequest) (*AuthorizationResponse, error)
+	CleanBucket(context.Context, *CleanBucketRequest) (*CleanBucketResponse, error)
+	AddToWhiteList(context.Context, *AddToWhiteListRequest) (*AddToWhiteListResponse, error)
+	DeleteFromWhiteList(context.Context, *DeleteFromWhiteListRequest) (*DeleteFromWhiteListResponse, error)
+	AddToBlackList(context.Context, *AddToBlackListRequest) (*AddToBlackListResponse, error)
+	DeleteFromBlackList(context.Context, *DeleteFromBlackListRequest) (*DeleteFromBlackListResponse, error)
 	mustEmbedUnimplementedAntiBruteForceServiceServer()
 }
 
@@ -106,22 +105,22 @@ type AntiBruteForceServiceServer interface {
 type UnimplementedAntiBruteForceServiceServer struct {
 }
 
-func (UnimplementedAntiBruteForceServiceServer) Auth(context.Context, *Authorization) (*Result, error) {
+func (UnimplementedAntiBruteForceServiceServer) Auth(context.Context, *AuthorizationRequest) (*AuthorizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
-func (UnimplementedAntiBruteForceServiceServer) CleanBucket(context.Context, *User) (*Empty, error) {
+func (UnimplementedAntiBruteForceServiceServer) CleanBucket(context.Context, *CleanBucketRequest) (*CleanBucketResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CleanBucket not implemented")
 }
-func (UnimplementedAntiBruteForceServiceServer) AddToWhiteList(context.Context, *Ip) (*Empty, error) {
+func (UnimplementedAntiBruteForceServiceServer) AddToWhiteList(context.Context, *AddToWhiteListRequest) (*AddToWhiteListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddToWhiteList not implemented")
 }
-func (UnimplementedAntiBruteForceServiceServer) DeleteFromWhiteList(context.Context, *Ip) (*Empty, error) {
+func (UnimplementedAntiBruteForceServiceServer) DeleteFromWhiteList(context.Context, *DeleteFromWhiteListRequest) (*DeleteFromWhiteListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFromWhiteList not implemented")
 }
-func (UnimplementedAntiBruteForceServiceServer) AddToBlackList(context.Context, *Ip) (*Empty, error) {
+func (UnimplementedAntiBruteForceServiceServer) AddToBlackList(context.Context, *AddToBlackListRequest) (*AddToBlackListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddToBlackList not implemented")
 }
-func (UnimplementedAntiBruteForceServiceServer) DeleteFromBlackList(context.Context, *Ip) (*Empty, error) {
+func (UnimplementedAntiBruteForceServiceServer) DeleteFromBlackList(context.Context, *DeleteFromBlackListRequest) (*DeleteFromBlackListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFromBlackList not implemented")
 }
 func (UnimplementedAntiBruteForceServiceServer) mustEmbedUnimplementedAntiBruteForceServiceServer() {}
@@ -138,7 +137,7 @@ func RegisterAntiBruteForceServiceServer(s grpc.ServiceRegistrar, srv AntiBruteF
 }
 
 func _AntiBruteForceService_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Authorization)
+	in := new(AuthorizationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -150,13 +149,13 @@ func _AntiBruteForceService_Auth_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/antiBruteForce.AntiBruteForceService/Auth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AntiBruteForceServiceServer).Auth(ctx, req.(*Authorization))
+		return srv.(AntiBruteForceServiceServer).Auth(ctx, req.(*AuthorizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AntiBruteForceService_CleanBucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(CleanBucketRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -168,13 +167,13 @@ func _AntiBruteForceService_CleanBucket_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/antiBruteForce.AntiBruteForceService/CleanBucket",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AntiBruteForceServiceServer).CleanBucket(ctx, req.(*User))
+		return srv.(AntiBruteForceServiceServer).CleanBucket(ctx, req.(*CleanBucketRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AntiBruteForceService_AddToWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Ip)
+	in := new(AddToWhiteListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -186,13 +185,13 @@ func _AntiBruteForceService_AddToWhiteList_Handler(srv interface{}, ctx context.
 		FullMethod: "/antiBruteForce.AntiBruteForceService/AddToWhiteList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AntiBruteForceServiceServer).AddToWhiteList(ctx, req.(*Ip))
+		return srv.(AntiBruteForceServiceServer).AddToWhiteList(ctx, req.(*AddToWhiteListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AntiBruteForceService_DeleteFromWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Ip)
+	in := new(DeleteFromWhiteListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -204,13 +203,13 @@ func _AntiBruteForceService_DeleteFromWhiteList_Handler(srv interface{}, ctx con
 		FullMethod: "/antiBruteForce.AntiBruteForceService/DeleteFromWhiteList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AntiBruteForceServiceServer).DeleteFromWhiteList(ctx, req.(*Ip))
+		return srv.(AntiBruteForceServiceServer).DeleteFromWhiteList(ctx, req.(*DeleteFromWhiteListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AntiBruteForceService_AddToBlackList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Ip)
+	in := new(AddToBlackListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -222,13 +221,13 @@ func _AntiBruteForceService_AddToBlackList_Handler(srv interface{}, ctx context.
 		FullMethod: "/antiBruteForce.AntiBruteForceService/AddToBlackList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AntiBruteForceServiceServer).AddToBlackList(ctx, req.(*Ip))
+		return srv.(AntiBruteForceServiceServer).AddToBlackList(ctx, req.(*AddToBlackListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AntiBruteForceService_DeleteFromBlackList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Ip)
+	in := new(DeleteFromBlackListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -240,7 +239,7 @@ func _AntiBruteForceService_DeleteFromBlackList_Handler(srv interface{}, ctx con
 		FullMethod: "/antiBruteForce.AntiBruteForceService/DeleteFromBlackList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AntiBruteForceServiceServer).DeleteFromBlackList(ctx, req.(*Ip))
+		return srv.(AntiBruteForceServiceServer).DeleteFromBlackList(ctx, req.(*DeleteFromBlackListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -15,10 +15,8 @@ import (
 	"go.uber.org/zap"
 )
 
-var isValidIP, isValidLogin, isValidPassword, white, black bool
-
 type App struct {
-	rdb           *redis.Client
+	rdb           redis.InterfaceRedis
 	l             *zap.Logger
 	listRepo      storage.ListStorage
 	configRepo    storage.ConfigurationStorage
@@ -29,10 +27,10 @@ type App struct {
 	mu            sync.Mutex
 }
 
-func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *redis.Client, l *zap.Logger) *App {
+func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *redis.Client, l *zap.Logger) (*App, error) {
 	limits, err := db.Configs().Get(ctx)
 	if err != nil {
-		l.Error("getting configuration error")
+		return nil, fmt.Errorf("getting configuration error: %w", err)
 	}
 	a := &App{
 		config:        c,
@@ -45,23 +43,24 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 		passwordLimit: limits["passwordAttempts"],
 		mu:            sync.Mutex{},
 	}
-	return a
+	return a, nil
 }
 
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
+	var isValidIP, isValidLogin, isValidPassword, white, black bool
 	ip := storage.IP{IP: request.IP}
 
 	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		white = a.containsInWhiteList(ctx, request.IP)
-	}()
-	go func() {
-		defer wg.Done()
-		black = a.containsInBlackList(ctx, request.IP)
-	}()
-	wg.Wait()
+	//wg.Add(2)
+	//go func() {
+	//	defer wg.Done()
+	white = a.containsInWhiteList(ctx, request.IP)
+	//}()
+	//go func() {
+	//	defer wg.Done()
+	black = a.containsInBlackList(ctx, request.IP)
+	//}()
+	//wg.Wait()
 	switch {
 	case white:
 		return true, nil
@@ -93,18 +92,18 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 	return true, nil
 }
 
-func (a *App) CleanBucket(u storage.User) error {
+func (a *App) CleanBucket(ctx context.Context, u storage.User) error {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
-		if err := a.rdb.CleanByKey(u.IP); err != nil {
+		if err := a.rdb.CleanByKey(ctx, u.IP); err != nil {
 			a.l.Error("clean bucket by IP", zap.Error(err))
 		}
 	}()
 	go func() {
 		defer wg.Done()
-		if err := a.rdb.CleanByKey(u.Login); err != nil {
+		if err := a.rdb.CleanByKey(ctx, u.Login); err != nil {
 			a.l.Error("clean bucket by Login", zap.Error(err))
 		}
 	}()
@@ -170,7 +169,7 @@ func (a *App) GetFromWhiteList(ip storage.IP) bool {
 func (a *App) ipValidation(ctx context.Context, ip storage.IP) bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	count, err := a.rdb.GettingCount(ip.IP)
+	count, err := a.rdb.GettingCount(ctx, ip.IP)
 	if err != nil {
 		a.l.Error("getting count error", zap.Error(err))
 		return false
@@ -188,7 +187,7 @@ func (a *App) ipValidation(ctx context.Context, ip storage.IP) bool {
 func (a *App) loginValidation(ctx context.Context, ip storage.IP, login string) bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	count, err := a.rdb.GettingCount(login)
+	count, err := a.rdb.GettingCount(ctx, login)
 	if err != nil {
 		a.l.Error("getting count error", zap.Error(err))
 		return false
@@ -206,7 +205,7 @@ func (a *App) loginValidation(ctx context.Context, ip storage.IP, login string) 
 func (a *App) passwordValidation(ctx context.Context, ip storage.IP, pass string) bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	count, err := a.rdb.GettingCount(pass)
+	count, err := a.rdb.GettingCount(ctx, pass)
 	if err != nil {
 		a.l.Error("getting count error", zap.Error(err))
 		return false
@@ -230,8 +229,6 @@ func parseAddress(ip string) (net.IPNet, error) {
 }
 
 func (a *App) containsInWhiteList(ctx context.Context, ip string) bool {
-	a.mu.Lock()
-	defer a.mu.Unlock()
 	ipnet, _ := parseAddress(ip)
 	list, err := a.listRepo.GetAllFromWhiteList(ctx)
 	if err != nil {
@@ -248,8 +245,6 @@ func (a *App) containsInWhiteList(ctx context.Context, ip string) bool {
 	return false
 }
 func (a *App) containsInBlackList(ctx context.Context, ip string) bool {
-	a.mu.Lock()
-	defer a.mu.Unlock()
 	ipnet, _ := parseAddress(ip)
 	list, err := a.listRepo.GetAllFromBlackList(ctx)
 	if err != nil {
