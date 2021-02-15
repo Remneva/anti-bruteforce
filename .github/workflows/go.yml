@@ -91,7 +91,7 @@ jobs:
 
       - name: Environment
         run: |
-          echo "export INTEGRATION_TEST_SERVICE_HOST = "antifrod:50051"" > ~/.bashrc
+          echo "export INTEGRATION_TEST_SERVICE_HOST = antifrod" > ~/.bashrc
 
       - name: Get env
         run: |
@@ -99,8 +99,6 @@ jobs:
           echo $INTEGRATION_TEST_SERVICE_HOST
 
       - name: Makefile
-        env:
-          INTEGRATION_TEST_SERVICE_HOST: "antifrod:50051"
         run: |
           make api-test
         working-directory: ${{env.working-directory}}
