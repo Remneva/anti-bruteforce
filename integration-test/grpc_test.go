@@ -37,23 +37,15 @@ func TestServerGRPC(t *testing.T) {
 		require.NoError(t, err)
 		assert.NotNil(t, response)
 		assert.Equal(t, true, response.Result.State)
-		fmt.Println("result", response.Result.State)
 	})
 
-	t.Run("Authorization failed", func(t *testing.T) {
+	t.Run("Authorization failed - Anti-Fraud Protection", func(t *testing.T) {
 		response, err := client.Auth(ctx, request)
-		if err != nil {
-			fmt.Printf("fail to dial: %v\n", err)
-		}
 		require.NoError(t, err)
 		response, err = client.Auth(ctx, request)
-		if err != nil {
-			fmt.Printf("fail to dial: %v\n", err)
-		}
 		require.NoError(t, err)
 		assert.NotNil(t, response)
 		assert.Equal(t, false, response.Result.State)
-		fmt.Println("result", response.Result)
 	})
 
 	t.Run("Authorization error", func(t *testing.T) {
@@ -107,7 +99,7 @@ func TestServerGRPC(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	t.Run("Delete from white list success", func(t *testing.T) {
+	t.Run("Delete from white list error", func(t *testing.T) {
 		requestWhiteIp := &pb.DeleteFromWhiteListRequest{
 			Ip: &pb.Ip{
 				Ip: "194.4.4.0/25",
@@ -115,6 +107,17 @@ func TestServerGRPC(t *testing.T) {
 		}
 		_, err := client.DeleteFromWhiteList(ctx, requestWhiteIp)
 		require.Error(t, err)
-		assert.Equal(t, "ip does not exist in black list: 194.4.4.0/25", err.Error())
+		assert.Equal(t, "rpc error: code = Internal desc = delete from white list error: ip does not exist in white list: 194.4.4.0/25", err.Error())
+	})
+
+	t.Run("Delete from black list error", func(t *testing.T) {
+		requestBlackIp := &pb.DeleteFromBlackListRequest{
+			Ip: &pb.Ip{
+				Ip: "194.4.4.0/25",
+			},
+		}
+		_, err := client.DeleteFromBlackList(ctx, requestBlackIp)
+		require.Error(t, err)
+		assert.Equal(t, "rpc error: code = Internal desc = delete from black list error: ip does not exist in black list: 194.4.4.0/25", err.Error())
 	})
 }
