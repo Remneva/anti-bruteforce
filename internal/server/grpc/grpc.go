@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"net"
 
 	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/server"
@@ -14,7 +15,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"net"
 )
 
 var _ server.Stopper = (*Server)(nil)

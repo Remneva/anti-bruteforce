@@ -89,15 +89,6 @@ jobs:
         run: go mod download
         working-directory: ${{env.working-directory}}
 
-      - name: Environment
-        run: |
-          echo "export INTEGRATION_TEST_SERVICE_HOST=ANTIFROD" > ~/.bashrc
-
-      - name: Get env
-        run: |
-          source ~/.bashrc
-          echo $INTEGRATION_TEST_SERVICE_HOST
-
       - name: Makefile
         run: |
           make api-test

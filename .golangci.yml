@@ -19,3 +19,4 @@ linters:
     - testpackage
     - wrapcheck
     - goimports
+    - wsl
