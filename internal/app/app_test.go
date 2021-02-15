@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"github.com/bxcodec/faker/v3"
 	"log"
 	"testing"
 	"time"

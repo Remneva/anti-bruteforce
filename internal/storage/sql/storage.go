@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"sync"
 
 	"github.com/Remneva/anti-bruteforce/internal/storage"
 
@@ -21,7 +20,6 @@ type Storage struct {
 	storage.BaseStorage
 	storage.ListStorage
 	storage.ConfigurationStorage
-	mu sync.Mutex
 }
 
 func NewDB(l *zap.Logger) *Storage {
