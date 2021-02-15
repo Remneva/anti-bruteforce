@@ -13,7 +13,7 @@ import (
 )
 
 func TestServerGRPC(t *testing.T) {
-	host := os.Getenv("INTEGRATION_TEST_SERVICE_HOST") + ":5051"
+	host := os.Getenv("INTEGRATION_TEST_SERVICE_HOST") + ":50051"
 	fmt.Println("HOST:", host)
 	if host == "" {
 		host = "localhost:50051"
