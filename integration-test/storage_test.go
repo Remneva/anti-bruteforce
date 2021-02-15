@@ -3,13 +3,14 @@ package test
 import (
 	"context"
 	"flag"
+	"log"
+	"testing"
+
 	"github.com/Remneva/anti-bruteforce/internal/logger"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
 	"github.com/Remneva/anti-bruteforce/internal/storage/sql"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zapcore"
-	"log"
-	"testing"
 )
 
 var dsn = "host=postgres port=5432 user=test password=test dbname=exampledb sslmode=disable"

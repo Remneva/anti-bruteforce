@@ -3,12 +3,12 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/Remneva/anti-bruteforce/internal/server/pb"
+	"testing"
 
+	"github.com/Remneva/anti-bruteforce/internal/server/pb"
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
 	"google.golang.org/grpc"
-	"testing"
 )
 
 func TestServerGRPC(t *testing.T) {

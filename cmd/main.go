@@ -64,7 +64,7 @@ func main() {
 	}
 }
 func signalChan(ctx context.Context, srv ...server.Stopper) {
-	signals := make(chan os.Signal)
+	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	fmt.Printf("Got %v...\n", <-signals) //nolint:forbidigo
 	select {

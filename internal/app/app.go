@@ -27,7 +27,7 @@ type App struct {
 	mu            sync.Mutex
 }
 
-func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *redis.Client, l *zap.Logger) (*App, error) {
+func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *redis.Client, l *zap.Logger) (*App, error) { // nolint:interfacer
 	limits, err := db.Configs().Get(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting configuration error: %w", err)
@@ -49,18 +49,9 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
 	var isValidIP, isValidLogin, isValidPassword, white, black bool
 	ip := storage.IP{IP: request.IP}
-
-	wg := sync.WaitGroup{}
-	//wg.Add(2)
-	//go func() {
-	//	defer wg.Done()
 	white = a.containsInWhiteList(ctx, request.IP)
-	//}()
-	//go func() {
-	//	defer wg.Done()
 	black = a.containsInBlackList(ctx, request.IP)
-	//}()
-	//wg.Wait()
+
 	switch {
 	case white:
 		return true, nil
@@ -69,7 +60,7 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 	case black && white:
 		return false, nil
 	}
-
+	wg := sync.WaitGroup{}
 	wg.Add(3)
 	go func() {
 		defer wg.Done()

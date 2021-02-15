@@ -2,7 +2,7 @@ BIN := "./bin/antifrod"
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
 
-.PHONY: build run test lint api-test compose down prune
+.PHONY: build run test lint lint-fix api-test compose down prune goimports
 
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd
@@ -28,6 +28,9 @@ lint: install-lint-deps
 lint-fix:
 	gofmt -w ./..
 	gci -w ./..
+
+goimports:
+	goimports -w ./..
 
 generate:
 	mkdir -p internal/server/pb

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis"
 	"go.uber.org/zap"
 )
 
@@ -45,7 +45,7 @@ func (c *Client) RdbConnect(ctx context.Context, address string, password string
 }
 
 func (c *Client) Close(ctx context.Context) error {
-	err := c.Close(ctx)
+	err := c.rdb.Close()
 	if err != nil {
 		return err
 	}

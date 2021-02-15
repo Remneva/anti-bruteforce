@@ -3,14 +3,13 @@ package grpc
 import (
 	"context"
 	"fmt"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"net"
 
 	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/server"
 	"github.com/Remneva/anti-bruteforce/internal/server/pb"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
-	"github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -28,9 +27,8 @@ type Server struct {
 }
 
 func LogRequest(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (response interface{}, err error) {
-
 	fmt.Printf("Request for : %s\n", info.FullMethod)
-	// Last but super important, execute the handler so that the actualy gRPC request is also performed
+	// Last but super important, execute the handler so that the actually gRPC request is also performed
 	return handler(ctx, req)
 }
 

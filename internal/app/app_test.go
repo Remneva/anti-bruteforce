@@ -10,7 +10,6 @@ import (
 	"github.com/Remneva/anti-bruteforce/internal/redis"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
 	"github.com/alicebob/miniredis"
-	"github.com/bxcodec/faker/v3"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/goleak"

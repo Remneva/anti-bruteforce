@@ -9,6 +9,7 @@ require (
 	github.com/apex/log v1.9.0
 	github.com/bxcodec/faker/v3 v3.5.0
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.4.8
 	github.com/golang/mock v1.4.4
 	github.com/golang/protobuf v1.4.3
