@@ -14,6 +14,8 @@ services:
       context: .
       dockerfile: integration-test/Dockerfile
     restart: on-failure
+    environment:
+      INTEGRATION_TEST_SERVICE_HOST: "antifrod"
     expose:
       - 6397
       - 50051
