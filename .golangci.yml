@@ -20,4 +20,3 @@ linters:
     - wsl
     - wrapcheck
     - goimports
-    - forbidigo
