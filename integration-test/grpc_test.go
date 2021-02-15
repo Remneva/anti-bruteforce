@@ -63,11 +63,58 @@ func TestServerGRPC(t *testing.T) {
 			},
 		}
 		_, err := client.Auth(ctx, request)
-		if err != nil {
-			fmt.Printf("fail to dial: %v\n", err)
-		}
 		require.Errorf(t, err, "Database query failed")
 		assert.Equal(t, "rpc error: code = InvalidArgument desc = login, password or ip can`t be empty", err.Error())
 	})
 
+	t.Run("Add to black list success", func(t *testing.T) {
+		requestBlackIp := &pb.AddToBlackListRequest{
+			Ip: &pb.Ip{
+				Ip: "193.3.3.0/25",
+			},
+		}
+		_, err := client.AddToBlackList(ctx, requestBlackIp)
+		require.NoError(t, err)
+	})
+
+	t.Run("Add to white list success", func(t *testing.T) {
+		requestWhiteIp := &pb.AddToWhiteListRequest{
+			Ip: &pb.Ip{
+				Ip: "193.3.3.0/25",
+			},
+		}
+		_, err := client.AddToWhiteList(ctx, requestWhiteIp)
+		require.NoError(t, err)
+	})
+
+	t.Run("Delete from black list success", func(t *testing.T) {
+		requestBlackIp := &pb.DeleteFromBlackListRequest{
+			Ip: &pb.Ip{
+				Ip: "193.3.3.0/25",
+			},
+		}
+		_, err := client.DeleteFromBlackList(ctx, requestBlackIp)
+		require.NoError(t, err)
+	})
+
+	t.Run("Delete from white list success", func(t *testing.T) {
+		requestWhiteIp := &pb.DeleteFromWhiteListRequest{
+			Ip: &pb.Ip{
+				Ip: "193.3.3.0/25",
+			},
+		}
+		_, err := client.DeleteFromWhiteList(ctx, requestWhiteIp)
+		require.NoError(t, err)
+	})
+
+	t.Run("Delete from white list success", func(t *testing.T) {
+		requestWhiteIp := &pb.DeleteFromWhiteListRequest{
+			Ip: &pb.Ip{
+				Ip: "194.4.4.0/25",
+			},
+		}
+		_, err := client.DeleteFromWhiteList(ctx, requestWhiteIp)
+		require.Error(t, err)
+		assert.Equal(t, "ip does not exist in black list: 194.4.4.0/25", err.Error())
+	})
 }
