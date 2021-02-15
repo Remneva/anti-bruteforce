@@ -9,7 +9,6 @@ on:
 env:
   GO111MODULE: "on"
   GOPROXY: "https://proxy.golang.org"
-  INTEGRATION_TEST_SERVICE_HOST: "antifrod:50051"
   working-directory: .
 
 jobs:
@@ -91,6 +90,8 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: Makefile
+        env:
+          INTEGRATION_TEST_SERVICE_HOST: "antifrod:50051"
         run: |
           make api-test
         working-directory: ${{env.working-directory}}
