@@ -2,7 +2,7 @@ BIN := "./bin/antifrod"
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
 
-.PHONY: build run test lint lint-fix api-test compose down prune goimports
+.PHONY: build run test lint lint-fix api-test compose down prune goimports wsl
 
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd
@@ -32,6 +32,9 @@ lint-fix:
 goimports:
 	goimports -w ./..
 
+wsl:
+	wsl -w ./...
+
 generate:
 	mkdir -p internal/server/pb
 	protoc --go_out=internal/server/pb  --go-grpc_out=internal/server/pb  api/*.proto
@@ -46,7 +49,9 @@ compose:
 	docker-compose -f docker-compose.yml up --build -d
 	docker-compose ps -a
 
+
 api-test:
+	export INTEGRATION_TEST_SERVICE_HOST="antifrod:50051"
 	set -e ;\
 	docker-compose -f docker-compose.test.yml up --build -d ;\
 	sleep 5 ;\
