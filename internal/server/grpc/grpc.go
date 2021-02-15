@@ -9,6 +9,7 @@ import (
 	"github.com/Remneva/anti-bruteforce/internal/server"
 	"github.com/Remneva/anti-bruteforce/internal/server/pb"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
+	"github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
