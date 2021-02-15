@@ -51,7 +51,7 @@ compose:
 
 
 api-test:
-	export INTEGRATION_TEST_SERVICE_HOST="antifrod:50051"
+	echo "INTEGRATION_TEST_SERVICE_HOST = "antifrod:50051"/"
 	set -e ;\
 	docker-compose -f docker-compose.test.yml up --build -d ;\
 	sleep 5 ;\

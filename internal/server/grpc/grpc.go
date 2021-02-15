@@ -3,7 +3,6 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"net"
 
 	"github.com/Remneva/anti-bruteforce/internal/app"
 	"github.com/Remneva/anti-bruteforce/internal/server"
@@ -15,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"net"
 )
 
 var _ server.Stopper = (*Server)(nil)
@@ -27,12 +27,6 @@ type Server struct {
 	app    *app.App
 }
 
-func LogRequest(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (response interface{}, err error) {
-	fmt.Printf("Request for : %s\n", info.FullMethod)
-	// Last but super important, execute the handler so that the actually gRPC request is also performed
-	return handler(ctx, req)
-}
-
 func NewServer(app *app.App, l *zap.Logger, address string) (*Server, error) {
 	l.Info("grpc is running...")
 	lsn, err := net.Listen("tcp", address)
@@ -40,13 +34,14 @@ func NewServer(app *app.App, l *zap.Logger, address string) (*Server, error) {
 		l.Error("Listening Error", zap.Error(err))
 		return &Server{}, fmt.Errorf("database query failed: %w", err)
 	}
+	alwaysLoggingDeciderServer := func(ctx context.Context, fullMethodName string, servingObject interface{}) bool { return true }
+
 	server := grpc.NewServer(
-		grpc.StreamInterceptor(
-			grpc_middleware.ChainStreamServer(
-				grpc_zap.StreamServerInterceptor(l))),
 		grpc.UnaryInterceptor(
 			grpc_middleware.ChainUnaryServer(
-				grpc_zap.UnaryServerInterceptor(l))))
+				grpc_zap.UnaryServerInterceptor(l),
+				grpc_zap.PayloadUnaryServerInterceptor(l, alwaysLoggingDeciderServer)),
+		))
 
 	srv := &Server{ //nolint:exhaustivestruct
 		app:    app,
