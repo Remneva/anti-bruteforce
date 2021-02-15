@@ -17,6 +17,5 @@ linters:
     - nakedret
     - nlreturn
     - testpackage
-    - wsl
     - wrapcheck
     - goimports

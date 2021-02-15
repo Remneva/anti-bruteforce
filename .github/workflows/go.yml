@@ -89,6 +89,15 @@ jobs:
         run: go mod download
         working-directory: ${{env.working-directory}}
 
+      - name: Environment
+        run: |
+          echo "INTEGRATION_TEST_SERVICE_HOST = "antifrod:50051"" > ~/.bashrc
+
+      - name: Get env
+        run: |
+          source ~/.bashrc
+          echo $ENV
+
       - name: Makefile
         env:
           INTEGRATION_TEST_SERVICE_HOST: "antifrod:50051"
