@@ -91,7 +91,7 @@ jobs:
 
       - name: Environment
         run: |
-          echo "export INTEGRATION_TEST_SERVICE_HOST = antifrod" > ~/.bashrc
+          echo "export INTEGRATION_TEST_SERVICE_HOST=ANTIFROD" > ~/.bashrc
 
       - name: Get env
         run: |
