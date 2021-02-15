@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/Remneva/anti-bruteforce/internal/server/pb"
@@ -12,7 +13,12 @@ import (
 )
 
 func TestServerGRPC(t *testing.T) {
-	conn, err := grpc.Dial("antifrod:50051", grpc.WithInsecure())
+	var host = os.Getenv("INTEGRATION_TEST_SERVICE_HOST")
+	if host == "" {
+		host = "localhost:50051"
+	}
+	fmt.Println("HOST:", host)
+	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	ctx := context.Background()
 	if err != nil {
 		fmt.Println(err)
