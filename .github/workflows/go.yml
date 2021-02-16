@@ -47,6 +47,29 @@ jobs:
           make lint
         working-directory: ${{env.working-directory}}
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: go mod download
+        working-directory: ${{env.working-directory}}
+
+      - name: build
+        run: |
+          make build
+        working-directory: ${{env.working-directory}}
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -67,7 +90,6 @@ jobs:
 
       - name: Unit tests
         run: |
-          make build
           make test
         working-directory: ${{env.working-directory}}
 
