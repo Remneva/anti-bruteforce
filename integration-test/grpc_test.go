@@ -19,13 +19,11 @@ func TestServerGRPC(t *testing.T) {
 	} else {
 		host = host + ":50051"
 	}
-
-	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	ctx := context.Background()
+	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	defer conn.Close()
 
 	client := pb.NewAntiBruteForceServiceClient(conn)

@@ -29,16 +29,19 @@ func init() {
 
 func main() {
 	flag.Parse()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	config, err := configs.Read(config)
 	if err != nil {
 		log.Fatal("failed to read config")
 	}
+
 	logg, err := logger.NewLogger(config.Logger.Level, env, config.Logger.Path)
 	if err != nil {
 		log.Fatal("failed to create logger")
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	redisClient := redis.NewClient(logg, config.Redis.ExpiryPeriod)
 	redisClient, err = redisClient.RdbConnect(ctx, config.Redis.Address, config.Redis.Password)
@@ -57,7 +60,10 @@ func main() {
 		logg.Fatal("getting configuration error")
 	}
 
-	grpc, _ := grpc2.NewServer(application, logg, config.Port.Grpc)
+	grpc, err := grpc2.NewServer(application, logg, config.Port.Grpc)
+	if err != nil {
+		logg.Fatal("failed to create grpc server")
+	}
 	client := cli.New(application)
 	go client.RunCli()
 

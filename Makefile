@@ -32,12 +32,6 @@ lint-fix:
 	gofmt -w ./..
 	gci -w ./..
 
-goimports:
-	goimports -w ./..
-
-wsl:
-	wsl
-
 generate:
 	mkdir -p internal/server/pb
 	protoc --go_out=internal/server/pb  --go-grpc_out=internal/server/pb  api/*.proto
