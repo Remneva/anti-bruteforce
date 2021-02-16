@@ -30,9 +30,6 @@ func init() {
 func main() {
 	flag.Parse()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	config, err := configs.Read(config)
 	if err != nil {
 		log.Fatal("failed to read config")
@@ -42,6 +39,8 @@ func main() {
 	if err != nil {
 		log.Fatal("failed to create logger")
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	redisClient := redis.NewClient(logg, config.Redis.ExpiryPeriod)
 	redisClient, err = redisClient.RdbConnect(ctx, config.Redis.Address, config.Redis.Password)
@@ -76,7 +75,7 @@ func main() {
 func signalChan(ctx context.Context, srv ...server.Stopper) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-	fmt.Printf("Got %v...\n", <-signals) //nolint:forbidigo
+	fmt.Printf("Got %v...\n", <-signals)
 
 	select {
 	case <-signals:
