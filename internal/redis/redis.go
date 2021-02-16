@@ -28,6 +28,7 @@ func NewClient(l *zap.Logger, expiry time.Duration) *Client {
 	}
 	return c
 }
+
 func (c *Client) RdbConnect(ctx context.Context, address string, password string) (*Client, error) {
 	client := redis.NewClient(&redis.Options{ //nolint:exhaustivestruct
 		Addr:     address,
@@ -86,6 +87,7 @@ func (c *Client) setTimeoutForKey(ctx context.Context, key string) error {
 		c.l.Error("getting key error", zap.String("key", key), zap.Error(err))
 		return fmt.Errorf("error while getting key: %w", err)
 	}
+
 	if alreadyExist == "1" { // "1" - ключ новый
 		// устанавливаем срок действия ключа
 		_, err = c.rdb.Expire(ctx, key, 1*time.Hour).Result()

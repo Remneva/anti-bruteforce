@@ -13,19 +13,16 @@ RUN go mod download
 
 COPY . ${CODE_DIR}
 
-# Собираем статический бинарник Go (без зависимостей на Си API),
-# иначе он не будет работать в apline образе.
+# Собираем статический бинарник Go
 ARG LDFLAGS
 RUN CGO_ENABLED=0 go build \
         -ldflags "$LDFLAGS" \
         -o ${BIN_FILE} cmd/*
 
-# На выходе тонкий образ
 FROM alpine:3.9
 
 LABEL ORGANIZATION="OTUS Online Education"
 LABEL SERVICE="antibruteforce"
-LABEL MAINTAINERS="student@otus.ru"
 
 ENV BIN_FILE "/opt/antibruteforce/antibruteforce-app"
 COPY --from=build ${BIN_FILE} ${BIN_FILE}

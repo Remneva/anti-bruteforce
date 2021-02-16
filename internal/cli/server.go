@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"github.com/Remneva/anti-bruteforce/internal/app"
-	"github.com/Remneva/anti-bruteforce/internal/cli/pb"
+	"github.com/Remneva/anti-bruteforce/internal/server/pb"
 	"github.com/Remneva/anti-bruteforce/internal/storage"
 	"github.com/mitchellh/cli"
 	"google.golang.org/grpc"
@@ -27,8 +27,11 @@ func (s *Servercli) RunCli() {
 	c := cli.NewCLI("server", "1.0.0")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"clean": func() (cli.Command, error) {
-			return &Clean{}, nil
+		"auth": func() (cli.Command, error) {
+			return &Auth{}, nil
+		},
+		"cleanBucket": func() (cli.Command, error) {
+			return &CleanBucket{}, nil
 		},
 		"addToWhiteList": func() (cli.Command, error) {
 			return &AddToWhiteList{}, nil
@@ -45,7 +48,7 @@ func (s *Servercli) RunCli() {
 	}
 
 	if len(c.Args) == 0 {
-		listener, err := net.Listen("tcp", "antifrod:1234")
+		listener, err := net.Listen("tcp", "localhost:12344")
 		if err != nil {
 			fmt.Println(err)
 			log.Fatalf("failed to listen: %v", err)
@@ -53,87 +56,90 @@ func (s *Servercli) RunCli() {
 		grpcServer := grpc.NewServer()
 		s.grpc = grpcServer
 
-		pb.RegisterAntifraudServiceServer(grpcServer, &grpcCommands{commands: c.Commands, cli: s})
+		pb.RegisterAntiBruteForceServiceServer(grpcServer, &grpcCommands{commands: c.Commands, cli: s})
 
 		err = grpcServer.Serve(listener)
 		if err != nil {
 			log.Fatalf("failed to start: %v", err)
 		}
 	}
-	exitStatus, err := c.Run()
+	_, err := c.Run()
 	if err != nil {
 		log.Println(err)
 	}
-	os.Exit(exitStatus)
 }
 
-func (g *grpcCommands) Clean(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
-	ret, stdout, stderr, err := wrapper(g.commands["clean"], arg.Args)
+func (g *grpcCommands) Auth(ctx context.Context, request *pb.AuthorizationRequest) (*pb.AuthorizationResponse, error) {
+	panic("implement me")
+}
+
+func (g *grpcCommands) CleanBucket(ctx context.Context, request *pb.CleanBucketRequest) (*pb.CleanBucketResponse, error) {
+	_, _, _, err := wrapper(g.commands["clean"], request.User.Ip)
 	if err != nil {
 		return nil, fmt.Errorf("error: %w", err)
 	}
 	var us storage.User
-	us.Login = arg.Args[0]
-	us.IP = arg.Args[1]
-	if err = g.cli.app.CleanBucket(ctx, us); err != nil {
+	us.Login = request.User.Ip
+	us.IP = request.User.Login
+	if err := g.cli.app.CleanBucket(ctx, us); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
+	return &pb.CleanBucketResponse{}, nil
 }
 
-func (g *grpcCommands) AddToWhiteList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
-	ret, stdout, stderr, err := wrapper(g.commands["addToWhiteList"], arg.Args)
+func (g *grpcCommands) AddToWhiteList(ctx context.Context, request *pb.AddToWhiteListRequest) (*pb.AddToWhiteListResponse, error) {
+	_, _, _, err := wrapper(g.commands["addToWhiteList"], request.Ip.Ip)
 	if err != nil {
 		return nil, fmt.Errorf("error: %w", err)
 	}
-	ip := parseToStorage(arg.Args[0], arg.Args[1])
-	if err = g.cli.app.AddToWhiteList(ctx, ip); err != nil {
+	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
+	if err := g.cli.app.AddToWhiteList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
+	return &pb.AddToWhiteListResponse{}, nil
 }
 
-func (g *grpcCommands) AddToBlackList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
-	ret, stdout, stderr, err := wrapper(g.commands["addToBlackList"], arg.Args)
+func (g *grpcCommands) DeleteFromWhiteList(ctx context.Context, request *pb.DeleteFromWhiteListRequest) (*pb.DeleteFromWhiteListResponse, error) {
+	_, _, _, err := wrapper(g.commands["deleteFromBlackList"], request.Ip.Ip)
 	if err != nil {
 		return nil, fmt.Errorf("error: %w", err)
 	}
-	ip := parseToStorage(arg.Args[0], arg.Args[1])
-	if err = g.cli.app.AddToBlackList(ctx, ip); err != nil {
+	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
+	if err := g.cli.app.DeleteFromWhiteList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
+	return &pb.DeleteFromWhiteListResponse{}, nil
 }
 
-func (g *grpcCommands) DeleteFromWhiteList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
-	ret, stdout, stderr, err := wrapper(g.commands["deleteFromBlackList"], arg.Args)
+func (g *grpcCommands) AddToBlackList(ctx context.Context, request *pb.AddToBlackListRequest) (*pb.AddToBlackListResponse, error) {
+	_, _, _, err := wrapper(g.commands["addToBlackList"], request.Ip.Ip)
 	if err != nil {
 		return nil, fmt.Errorf("error: %w", err)
 	}
-	ip := parseToStorage(arg.Args[0], arg.Args[1])
-	if err = g.cli.app.DeleteFromWhiteList(ctx, ip); err != nil {
+	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
+	if err := g.cli.app.AddToBlackList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
+	return &pb.AddToBlackListResponse{}, nil
 }
 
-func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, arg *pb.Arg) (*pb.Output, error) {
-	ret, stdout, stderr, err := wrapper(g.commands["deleteFromBlackList"], arg.Args)
+func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, request *pb.DeleteFromBlackListRequest) (*pb.DeleteFromBlackListResponse, error) {
+	_, _, _, err := wrapper(g.commands["deleteFromBlackList"], request.Ip.Ip)
 	if err != nil {
 		return nil, fmt.Errorf("error: %w", err)
 	}
-	ip := parseToStorage(arg.Args[0], arg.Args[1])
-	if err = g.cli.app.DeleteFromBlackList(ctx, ip); err != nil {
+	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
+	if err := g.cli.app.DeleteFromBlackList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
-	return &pb.Output{Retcode: ret, Stdout: stdout, Stderr: stderr}, nil
+	return &pb.DeleteFromBlackListResponse{}, nil
 }
 
-func (t *Clean) Run(args []string) int {
+func (t *CleanBucket) Run(args []string) int {
 	return 0
 }
 
-func (t *Clean) Synopsis() string {
+func (t *CleanBucket) Synopsis() string {
 	return text
 }
 
@@ -153,7 +159,7 @@ func (t *AddToBlackList) Synopsis() string {
 	return text
 }
 
-func wrapper(cf cli.CommandFactory, args []string) (int32, []byte, []byte, error) {
+func wrapper(cf cli.CommandFactory, args ...string) (int32, []byte, []byte, error) {
 	var ret int32
 	oldStdout := os.Stdout // keep backup of the real stdout
 	oldStderr := os.Stderr
@@ -227,10 +233,10 @@ func parseToStorage(arg ...string) storage.IP {
 	return ip
 }
 
-type Clean struct {
+type CleanBucket struct {
 }
 
-func (t *Clean) Help() string {
+func (t *CleanBucket) Help() string {
 	return text
 }
 
@@ -275,5 +281,20 @@ func (d DeleteFromBlackList) Run(args []string) int {
 }
 
 func (d DeleteFromBlackList) Synopsis() string {
+	return text
+}
+
+type Auth struct {
+}
+
+func (d *Auth) Help() string {
+	return text
+}
+
+func (d *Auth) Run(args []string) int {
+	return 0
+}
+
+func (d *Auth) Synopsis() string {
 	return text
 }

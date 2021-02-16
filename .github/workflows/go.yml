@@ -67,8 +67,8 @@ jobs:
 
       - name: Unit tests
         run: |
-          make test
           make build
+          make test
         working-directory: ${{env.working-directory}}
 
   integration-test:
@@ -91,5 +91,5 @@ jobs:
 
       - name: Makefile
         run: |
-          make api-test
+          make integration-test
         working-directory: ${{env.working-directory}}

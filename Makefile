@@ -2,7 +2,10 @@ BIN := "./bin/antifrod"
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
 
-.PHONY: build run test lint lint-fix api-test compose down prune goimports wsl
+.PHONY: build run test lint lint-fix api-test compose down prune goimports wsl buildcli
+
+buildcli:
+	go build -v -o ./bin/cli -ldflags "$(LDFLAGS)" ./internal/cli/client
 
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd
@@ -33,7 +36,7 @@ goimports:
 	goimports -w ./..
 
 wsl:
-	wsl -w ./...
+	wsl
 
 generate:
 	mkdir -p internal/server/pb
@@ -49,9 +52,13 @@ compose:
 	docker-compose -f docker-compose.yml up --build -d
 	docker-compose ps -a
 
+down:
+	docker-compose down
 
-api-test:
-	set -e ;\
+prune:
+	docker system prune -a
+
+integration-test:
 	docker-compose -f docker-compose.test.yml up --build -d ;\
 	sleep 5 ;\
 	docker-compose ps -a ;\
@@ -60,8 +67,3 @@ api-test:
 	docker-compose -f docker-compose.test.yml down;\
 	exit $$test_status_code;
 
-down:
-	docker-compose down
-
-prune:
-	docker system prune -a

@@ -99,7 +99,6 @@ type AntiBruteForceServiceServer interface {
 	DeleteFromWhiteList(context.Context, *DeleteFromWhiteListRequest) (*DeleteFromWhiteListResponse, error)
 	AddToBlackList(context.Context, *AddToBlackListRequest) (*AddToBlackListResponse, error)
 	DeleteFromBlackList(context.Context, *DeleteFromBlackListRequest) (*DeleteFromBlackListResponse, error)
-	mustEmbedUnimplementedAntiBruteForceServiceServer()
 }
 
 // UnimplementedAntiBruteForceServiceServer must be embedded to have forward compatible implementations.

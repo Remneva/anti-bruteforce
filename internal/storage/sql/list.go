@@ -30,10 +30,12 @@ func (s *Storage) DeleteFromWhiteList(ctx context.Context, ip storage.IP) error 
 		s.l.Error("query error", zap.Error(err))
 		return fmt.Errorf("open connection error %w", err)
 	}
+
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		return fmt.Errorf("get rows affected error %w", err)
 	}
+
 	if rowsAffected > 0 {
 		s.l.Info("ip deleted from white list", zap.String("ip", ip.IP))
 	} else {
@@ -64,6 +66,7 @@ func (s *Storage) DeleteFromBlackList(ctx context.Context, ip storage.IP) error 
 	if err != nil {
 		return fmt.Errorf("get rows affected error %w", err)
 	}
+
 	if rowsAffected > 0 {
 		s.l.Info("ip deleted from black list", zap.String("ip", ip.IP))
 	} else {
@@ -102,6 +105,7 @@ func (s *Storage) GetAllFromWhiteList(ctx context.Context) ([]string, error) {
 		return nil, fmt.Errorf("query error %w", err)
 	}
 	defer rows.Close()
+
 	for rows.Next() {
 		if err = rows.Scan(
 			&address.ID,
@@ -126,6 +130,7 @@ func (s *Storage) GetAllFromBlackList(ctx context.Context) ([]string, error) {
 		return nil, fmt.Errorf("query error %w", err)
 	}
 	defer rows.Close()
+
 	for rows.Next() {
 		if err = rows.Scan(
 			&address.ID,

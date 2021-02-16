@@ -49,6 +49,7 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) {
 	var isValidIP, isValidLogin, isValidPassword, white, black bool
 	ip := storage.IP{IP: request.IP}
+
 	white = a.containsInWhiteList(ctx, request.IP)
 	black = a.containsInBlackList(ctx, request.IP)
 
@@ -60,21 +61,25 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 	case black && white:
 		return false, nil
 	}
+
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
 		isValidIP = a.ipValidation(ctx, ip)
 	}()
+
 	go func() {
 		defer wg.Done()
 		isValidLogin = a.loginValidation(ctx, ip, request.Login)
 	}()
+
 	go func() {
 		defer wg.Done()
 		isValidPassword = a.passwordValidation(ctx, ip, request.Password)
 	}()
 	wg.Wait()
+
 	if !isValidIP || !isValidLogin || !isValidPassword {
 		a.l.Info("Anti-Fraud Protection", zap.String("login", request.Login))
 		return false, nil
@@ -92,6 +97,7 @@ func (a *App) CleanBucket(ctx context.Context, u storage.User) error {
 			a.l.Error("clean bucket by IP", zap.Error(err))
 		}
 	}()
+
 	go func() {
 		defer wg.Done()
 		if err := a.rdb.CleanByKey(ctx, u.Login); err != nil {

@@ -19,8 +19,10 @@ services:
     restart: on-failure
     ports:
       - "50051:50051"
+      - "12344:12344"
     expose:
       - 50051
+      - 12344
     environment:
       REG_SERVICE_DB_DSN: "postgres://test:test@postgres:5432/exampledb?sslmode=disable"
     networks:

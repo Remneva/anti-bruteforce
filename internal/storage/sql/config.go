@@ -21,6 +21,7 @@ func (s *Storage) Get(ctx context.Context) (map[string]int64, error) {
 	}
 	defer rows.Close()
 	configs := make(map[string]int64, 3)
+
 	for rows.Next() {
 		var c storage.Config
 		if err = rows.Scan(

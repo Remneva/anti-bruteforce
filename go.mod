@@ -7,6 +7,7 @@ require (
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/alicebob/miniredis v2.5.0+incompatible
 	github.com/apex/log v1.9.0
+	github.com/bombsimon/wsl v1.2.8 // indirect
 	github.com/bxcodec/faker/v3 v3.5.0
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185
 	github.com/go-redis/redis v6.15.9+incompatible
