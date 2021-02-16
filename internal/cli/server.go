@@ -1,10 +1,8 @@
 package cli
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -21,6 +19,22 @@ const text = "something strange happens"
 type grpcCommands struct {
 	commands map[string]cli.CommandFactory
 	cli      *Servercli
+}
+
+type Servercli struct {
+	grpc *grpc.Server
+	app  *app.App
+}
+
+func New(app *app.App) *Servercli {
+	c := &Servercli{
+		app: app,
+	}
+	return c
+}
+
+func (s *Servercli) Stop() {
+	s.grpc.GracefulStop()
 }
 
 func (s *Servercli) RunCli() {
@@ -74,10 +88,6 @@ func (g *grpcCommands) Auth(ctx context.Context, request *pb.AuthorizationReques
 }
 
 func (g *grpcCommands) CleanBucket(ctx context.Context, request *pb.CleanBucketRequest) (*pb.CleanBucketResponse, error) {
-	_, _, _, err := wrapper(g.commands["clean"], request.User.Ip)
-	if err != nil {
-		return nil, fmt.Errorf("error: %w", err)
-	}
 	var us storage.User
 	us.Login = request.User.Ip
 	us.IP = request.User.Login
@@ -88,10 +98,6 @@ func (g *grpcCommands) CleanBucket(ctx context.Context, request *pb.CleanBucketR
 }
 
 func (g *grpcCommands) AddToWhiteList(ctx context.Context, request *pb.AddToWhiteListRequest) (*pb.AddToWhiteListResponse, error) {
-	_, _, _, err := wrapper(g.commands["addToWhiteList"], request.Ip.Ip)
-	if err != nil {
-		return nil, fmt.Errorf("error: %w", err)
-	}
 	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
 	if err := g.cli.app.AddToWhiteList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
@@ -100,10 +106,6 @@ func (g *grpcCommands) AddToWhiteList(ctx context.Context, request *pb.AddToWhit
 }
 
 func (g *grpcCommands) DeleteFromWhiteList(ctx context.Context, request *pb.DeleteFromWhiteListRequest) (*pb.DeleteFromWhiteListResponse, error) {
-	_, _, _, err := wrapper(g.commands["deleteFromBlackList"], request.Ip.Ip)
-	if err != nil {
-		return nil, fmt.Errorf("error: %w", err)
-	}
 	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
 	if err := g.cli.app.DeleteFromWhiteList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
@@ -112,10 +114,6 @@ func (g *grpcCommands) DeleteFromWhiteList(ctx context.Context, request *pb.Dele
 }
 
 func (g *grpcCommands) AddToBlackList(ctx context.Context, request *pb.AddToBlackListRequest) (*pb.AddToBlackListResponse, error) {
-	_, _, _, err := wrapper(g.commands["addToBlackList"], request.Ip.Ip)
-	if err != nil {
-		return nil, fmt.Errorf("error: %w", err)
-	}
 	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
 	if err := g.cli.app.AddToBlackList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
@@ -124,15 +122,18 @@ func (g *grpcCommands) AddToBlackList(ctx context.Context, request *pb.AddToBlac
 }
 
 func (g *grpcCommands) DeleteFromBlackList(ctx context.Context, request *pb.DeleteFromBlackListRequest) (*pb.DeleteFromBlackListResponse, error) {
-	_, _, _, err := wrapper(g.commands["deleteFromBlackList"], request.Ip.Ip)
-	if err != nil {
-		return nil, fmt.Errorf("error: %w", err)
-	}
 	ip := parseToStorage(request.Ip.Ip, request.Ip.Mask)
 	if err := g.cli.app.DeleteFromBlackList(ctx, ip); err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
 	return &pb.DeleteFromBlackListResponse{}, nil
+}
+
+func parseToStorage(arg ...string) storage.IP {
+	var ip storage.IP
+	ip.IP = arg[0]
+	ip.Mask = arg[1]
+	return ip
 }
 
 func (t *CleanBucket) Run(args []string) int {
@@ -157,80 +158,6 @@ func (t *AddToBlackList) Run(args []string) int {
 
 func (t *AddToBlackList) Synopsis() string {
 	return text
-}
-
-func wrapper(cf cli.CommandFactory, args ...string) (int32, []byte, []byte, error) {
-	var ret int32
-	oldStdout := os.Stdout // keep backup of the real stdout
-	oldStderr := os.Stderr
-
-	// Backup the stdout
-	read, write, err := os.Pipe()
-	if err != nil {
-		return ret, nil, nil, fmt.Errorf("error: %w", err)
-	}
-	// Backup the stderr
-	reade, writee, err := os.Pipe()
-	if err != nil {
-		return ret, nil, nil, fmt.Errorf("error: %w", err)
-	}
-	// assigne stdout and stderr to the input of the pipe
-	os.Stdout = write
-	os.Stderr = writee
-
-	runner, err := cf()
-	if err != nil {
-		return ret, nil, nil, fmt.Errorf("error: %w", err)
-	}
-	ret = int32(runner.Run(args))
-
-	outC := make(chan []byte)
-	errC := make(chan []byte)
-	// copy the output in a separate goroutine so printing can't block indefinitely
-	go func() {
-		var buf bytes.Buffer
-		_, err = io.Copy(&buf, read)
-		outC <- buf.Bytes()
-	}()
-	// copy the output in a separate goroutine so printing can't block indefinitely
-	go func() {
-		var buf bytes.Buffer
-		_, err = io.Copy(&buf, reade)
-
-		errC <- buf.Bytes()
-	}()
-
-	// back to normal state
-	write.Close()
-	writee.Close()
-	os.Stdout = oldStdout // restoring the real stdout
-	os.Stderr = oldStderr
-	stdout := <-outC
-	stderr := <-errC
-	return ret, stdout, stderr, nil
-}
-
-type Servercli struct {
-	grpc *grpc.Server
-	app  *app.App
-}
-
-func New(app *app.App) *Servercli {
-	c := &Servercli{
-		app: app,
-	}
-	return c
-}
-
-func (s *Servercli) Stop() {
-	s.grpc.GracefulStop()
-}
-
-func parseToStorage(arg ...string) storage.IP {
-	var ip storage.IP
-	ip.IP = arg[0]
-	ip.Mask = arg[1]
-	return ip
 }
 
 type CleanBucket struct {
