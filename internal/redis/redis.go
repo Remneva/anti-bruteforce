@@ -63,12 +63,10 @@ func (c *Client) GettingCount(ctx context.Context, key string) (int64, error) {
 	count, err := incr.Result()
 	c.l.Info("increment", zap.String("key", key), zap.Int64("incr", count))
 	if err != nil {
-		c.l.Error("getting increment error", zap.String("key", key))
 		return 0, fmt.Errorf("getting increment error: %w", err)
 	}
 	// устанавливаем срок действия бакета, чтобы невостребованные ключи не накапливались
 	if err = c.setTimeoutForKey(ctx, key); err != nil {
-		c.l.Error("TTL setting error", zap.String("key", key))
 		return 0, fmt.Errorf("TTL setting error: %w", err)
 	}
 	return count, nil
@@ -86,7 +84,6 @@ func (c *Client) setTimeoutForKey(ctx context.Context, key string) error {
 	// проверяем наличие ключа в базе
 	alreadyExist, err := c.rdb.Get(ctx, key).Result()
 	if err != nil {
-		c.l.Error("getting key error", zap.String("key", key), zap.Error(err))
 		return fmt.Errorf("error while getting key: %w", err)
 	}
 
@@ -94,7 +91,6 @@ func (c *Client) setTimeoutForKey(ctx context.Context, key string) error {
 		// устанавливаем срок действия ключа
 		_, err = c.rdb.Expire(ctx, key, 1*time.Hour).Result()
 		if err != nil {
-			c.l.Error("setting TTL error", zap.String("key", key))
 			return fmt.Errorf("error while setting TTL: %w", err)
 		}
 		c.l.Info("setting TTL for new key", zap.String("key", key))
