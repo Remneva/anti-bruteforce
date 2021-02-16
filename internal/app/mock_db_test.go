@@ -65,10 +65,10 @@ func (mr *MockBaseStorageMockRecorder) Close() *gomock.Call {
 }
 
 // Configs mocks base method
-func (m *MockBaseStorage) Configs() storage.ConfigurationStorage {
+func (m *MockBaseStorage) Configs() storage.Configurations {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Configs")
-	ret0, _ := ret[0].(storage.ConfigurationStorage)
+	ret0, _ := ret[0].(storage.Configurations)
 	return ret0
 }
 
@@ -79,10 +79,10 @@ func (mr *MockBaseStorageMockRecorder) Configs() *gomock.Call {
 }
 
 // Lists mocks base method
-func (m *MockBaseStorage) Lists() storage.ListStorage {
+func (m *MockBaseStorage) Lists() storage.Lists {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Lists")
-	ret0, _ := ret[0].(storage.ListStorage)
+	ret0, _ := ret[0].(storage.Lists)
 	return ret0
 }
 
@@ -92,7 +92,7 @@ func (mr *MockBaseStorageMockRecorder) Lists() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Lists", reflect.TypeOf((*MockBaseStorage)(nil).Lists))
 }
 
-// MockConfigurationStorage is a mock of ConfigurationStorage interface
+// MockConfigurationStorage is a mock of Configurations interface
 type MockConfigurationStorage struct {
 	ctrl     *gomock.Controller
 	recorder *MockConfigurationStorageMockRecorder
@@ -130,7 +130,7 @@ func (mr *MockConfigurationStorageMockRecorder) Get(ctx interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockConfigurationStorage)(nil).Get), ctx)
 }
 
-// MockListStorage is a mock of ListStorage interface
+// MockListStorage is a mock of Lists interface
 type MockListStorage struct {
 	ctrl     *gomock.Controller
 	recorder *MockListStorageMockRecorder

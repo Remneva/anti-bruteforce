@@ -9,6 +9,8 @@ import (
 	"go.uber.org/zap"
 )
 
+var _ InterfaceRedis = (*Client)(nil)
+
 type Client struct {
 	rdb    *redis.Client
 	l      *zap.Logger

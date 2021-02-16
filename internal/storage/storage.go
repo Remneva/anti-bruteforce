@@ -10,15 +10,15 @@ import (
 type BaseStorage interface {
 	Connect(ctx context.Context, dsn string, l *zap.Logger) error
 	Close() error
-	Configs() ConfigurationStorage
-	Lists() ListStorage
+	Configs() Configurations
+	List() Lists
 }
 
-type ConfigurationStorage interface {
+type Configurations interface {
 	Get(ctx context.Context) (map[string]int64, error)
 }
 
-type ListStorage interface {
+type Lists interface {
 	AddToWhiteList(ctx context.Context, ip IP) error
 	AddToBlackList(ctx context.Context, ip IP) error
 	DeleteFromWhiteList(ctx context.Context, ip IP) error

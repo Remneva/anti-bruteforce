@@ -56,14 +56,17 @@ func main() {
 	if err != nil {
 		logg.Fatal("getting configuration error")
 	}
+
 	grpc, _ := grpc2.NewServer(application, logg, config.Port.Grpc)
 	client := cli.New(application)
 	go client.RunCli()
+
 	go signalChan(ctx, grpc, client)
 	if err := grpc.Start(); err != nil {
 		logg.Fatal("failed to start grpc")
 	}
 }
+
 func signalChan(ctx context.Context, srv ...server.Stopper) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)

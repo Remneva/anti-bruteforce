@@ -7,9 +7,9 @@ import (
 	"github.com/Remneva/anti-bruteforce/internal/storage"
 )
 
-var _ storage.ConfigurationStorage = (*Storage)(nil)
+var _ storage.Configurations = (*Storage)(nil)
 
-func (s *Storage) Configs() storage.ConfigurationStorage {
+func (s *Storage) Configs() storage.Configurations {
 	return s
 }
 func (s *Storage) Get(ctx context.Context) (map[string]int64, error) {

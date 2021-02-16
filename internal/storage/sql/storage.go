@@ -18,8 +18,8 @@ type Storage struct {
 	DB *sql.DB
 	l  *zap.Logger
 	storage.BaseStorage
-	storage.ListStorage
-	storage.ConfigurationStorage
+	storage.Lists
+	storage.Configurations
 }
 
 func NewDB(l *zap.Logger) *Storage {

@@ -15,11 +15,13 @@ import (
 	"go.uber.org/zap"
 )
 
+var _ InterfaceApp = (*App)(nil)
+
 type App struct {
 	rdb           redis.InterfaceRedis
 	l             *zap.Logger
-	listRepo      storage.ListStorage
-	configRepo    storage.ConfigurationStorage
+	listRepo      storage.Lists
+	configRepo    storage.Configurations
 	loginLimit    int64
 	passwordLimit int64
 	ipLimit       int64
@@ -36,7 +38,7 @@ func NewApp(ctx context.Context, db storage.BaseStorage, c configs.Config, rdb *
 		config:        c,
 		rdb:           rdb,
 		l:             l,
-		listRepo:      db.Lists(),
+		listRepo:      db.List(),
 		configRepo:    db.Configs(),
 		ipLimit:       limits["ipAttempts"],
 		loginLimit:    limits["loginAttempts"],
@@ -64,24 +66,30 @@ func (a *App) Validate(ctx context.Context, request storage.Auth) (bool, error) 
 
 	wg := sync.WaitGroup{}
 	wg.Add(3)
+
 	go func() {
 		defer wg.Done()
-		isValidIP = a.ipValidation(ctx, ip)
+		if isValidIP = a.ipValidation(ctx, ip); !isValidIP {
+			a.l.Info("Anti-Fraud Protection", zap.String("ip", request.IP))
+		}
 	}()
 
 	go func() {
 		defer wg.Done()
-		isValidLogin = a.loginValidation(ctx, ip, request.Login)
+		if isValidLogin = a.loginValidation(ctx, ip, request.Login); !isValidLogin {
+			a.l.Info("Anti-Fraud Protection", zap.String("login", request.Login))
+		}
 	}()
 
 	go func() {
 		defer wg.Done()
-		isValidPassword = a.passwordValidation(ctx, ip, request.Password)
+		if isValidPassword = a.passwordValidation(ctx, ip, request.Password); !isValidPassword {
+			a.l.Info("Anti-Fraud Protection", zap.String("password", request.Password))
+		}
 	}()
 	wg.Wait()
 
 	if !isValidIP || !isValidLogin || !isValidPassword {
-		a.l.Info("Anti-Fraud Protection", zap.String("login", request.Login))
 		return false, nil
 	}
 	a.l.Info("Successful authorization", zap.String("login", request.Login))

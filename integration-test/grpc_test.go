@@ -19,6 +19,7 @@ func TestServerGRPC(t *testing.T) {
 	} else {
 		host = host + ":50051"
 	}
+
 	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	ctx := context.Background()
 	if err != nil {

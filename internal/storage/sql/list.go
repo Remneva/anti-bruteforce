@@ -8,9 +8,9 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ storage.ListStorage = (*Storage)(nil)
+var _ storage.Lists = (*Storage)(nil)
 
-func (s *Storage) Lists() storage.ListStorage {
+func (s *Storage) List() storage.Lists {
 	return s
 }
 func (s *Storage) AddToWhiteList(ctx context.Context, ip storage.IP) error {
