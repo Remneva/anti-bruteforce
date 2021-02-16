@@ -114,7 +114,7 @@ func (s *Storage) GetAllFromWhiteList(ctx context.Context) ([]string, error) {
 		); err != nil {
 			return nil, fmt.Errorf("scan error %w", err)
 		}
-		if err := rows.Err(); err != nil {
+		if err = rows.Err(); err != nil {
 			return nil, fmt.Errorf("scan error %w", err)
 		}
 		list = append(list, address.IP)
