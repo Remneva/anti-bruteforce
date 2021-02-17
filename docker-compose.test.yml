@@ -15,19 +15,19 @@ services:
       dockerfile: integration-test/Dockerfile
     restart: on-failure
     environment:
-      INTEGRATION_TEST_SERVICE_HOST: "antifrod"
+      INTEGRATION_TEST_SERVICE_HOST: "antifraud"
     expose:
       - 6397
       - 50051
       - 5432
     links:
-      - antifrod
+      - antifraud
     networks:
       - redis
       - postgres
       - app
 
-  antifrod:
+  antifraud:
     build:
       context: .
       dockerfile: build/Dockerfile

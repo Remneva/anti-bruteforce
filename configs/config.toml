@@ -2,7 +2,7 @@
 dsn = "host=postgres port=5432 user=test password=test dbname=exampledb sslmode=disable"
 [logger]
 level = "INFO"
-path = "/tmp/tmpdir/antifrod.log"
+path = "/tmp/tmpdir/antifraud.log"
 [port]
 grpc = ":50051"
 [redis]

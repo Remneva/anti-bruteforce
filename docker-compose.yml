@@ -9,7 +9,7 @@ networks:
     driver: bridge
 
 services:
-  antifrod:
+  antifraud:
     build:
       context: .
       dockerfile: build/Dockerfile
