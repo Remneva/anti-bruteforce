@@ -1,0 +1,57 @@
+version: "3"
+
+networks:
+  redis:
+    driver: bridge
+  postgres:
+    driver: bridge
+  app:
+    driver: bridge
+
+services:
+  antifraud:
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    depends_on:
+      - redis
+      - postgres
+    restart: on-failure
+    ports:
+      - "50051:50051"
+    expose:
+      - 50051
+    environment:
+      REG_SERVICE_DB_DSN: "postgres://test:test@postgres:5432/exampledb?sslmode=disable"
+    networks:
+      - redis
+      - postgres
+      - app
+
+  postgres:
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: exampledb
+    volumes:
+      # https://github.com/docker-library/postgres/blob/master/docker-entrypoint.sh#L145
+      - ./migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql
+    networks:
+      - postgres
+
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+    expose:
+      - 6379
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    networks:
+      - app

@@ -3,7 +3,41 @@ syntax = "proto3";
 package antiBruteForce;
 
 option go_package = ".;pb";
-import "google/protobuf/empty.proto";
+
+message Empty {}
+
+message AddToWhiteListRequest{
+  Ip ip = 1;
+}
+message AddToWhiteListResponse{
+}
+message DeleteFromWhiteListRequest{
+  Ip ip = 1;
+}
+message DeleteFromWhiteListResponse{
+}
+message AddToBlackListRequest{
+  Ip ip = 1;
+}
+message AddToBlackListResponse{
+
+}
+message DeleteFromBlackListRequest{
+  Ip ip = 1;
+}
+message DeleteFromBlackListResponse{
+}
+message AuthorizationRequest{
+  Authorization authorization = 1;
+}
+message AuthorizationResponse{
+  Result result = 1;
+}
+message CleanBucketRequest{
+  User user = 1;
+}
+message CleanBucketResponse{
+}
 
 message Authorization {
   string login = 1;
@@ -12,35 +46,35 @@ message Authorization {
 }
 
 message Result{
-  bool result = 1;
+  bool state = 1;
 }
 
-message CleanBucket{
+message User{
   string login = 1;
   string ip = 2;
 }
 
-message AddToList{
+message Ip{
   string ip = 1;
   string mask = 2;
 }
 
-service AntiBruteForce {
-  rpc Auth (Authorization) returns (Result){
+service AntiBruteForceService {
+  rpc Auth (AuthorizationRequest) returns (AuthorizationResponse){
   }
 
-  rpc CleanBucket (CleanBucket) returns (google.protobuf.Empty){
+  rpc CleanBucket (CleanBucketRequest) returns (CleanBucketResponse){
   }
 
-  rpc AddToWhiteList(AddToList) returns (google.protobuf.Empty){
+  rpc AddToWhiteList(AddToWhiteListRequest) returns (AddToWhiteListResponse){
   }
 
-  rpc DeleteFromWhiteList (AddToList) returns (google.protobuf.Empty){
+  rpc DeleteFromWhiteList (DeleteFromWhiteListRequest) returns (DeleteFromWhiteListResponse){
   }
 
-  rpc AddToBlackList(AddToList) returns (google.protobuf.Empty){
+  rpc AddToBlackList (AddToBlackListRequest) returns (AddToBlackListResponse){
   }
 
-  rpc DeleteFromBlackList (AddToList) returns (google.protobuf.Empty){
+  rpc DeleteFromBlackList (DeleteFromBlackListRequest) returns (DeleteFromBlackListResponse){
   }
 }

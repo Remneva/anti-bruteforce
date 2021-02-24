@@ -1,0 +1,11 @@
+[psql]
+dsn = "host=postgres port=5432 user=test password=test dbname=exampledb sslmode=disable"
+[logger]
+level = "INFO"
+path = "/tmp/tmpdir/antifraud.log"
+[port]
+grpc = ":50051"
+[redis]
+address = "redis:6379"
+password = ""
+expiryperiod = 60 # increment expiry period
